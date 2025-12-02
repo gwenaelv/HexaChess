@@ -11,7 +11,29 @@
 [![Release](https://img.shields.io/github/release/Inc44/HexaChess.svg)](https://github.com/Inc44/HexaChess/releases)
 [![Sponsor](https://img.shields.io/static/v1?label=Sponsor&message=%E2%9D%A4&logo=GitHub&color=%23fe8e86)](https://github.com/sponsors/Inc44)
 
+Gliński's hexagonal chess game implementation in Java.
+
 ![HexaChess](HexaChess.png)
+
+## 🐛 Bugs
+
+- The game continues despite checkmate, stalemate, or threefold repetition.
+
+## ⛔ Known Limitations
+
+- The existing version is written with Java Swing, which may not provide the best user/dev experience compared to JavaFX.
+- The existing version may be using material not covered during lessons (e.g., enum, AWT, Swing, URI, ImageIO, Thread, etc.).
+
+## 🚧 TODO
+
+- [ ] **Different Screen Sizes**: Adapt UI for various screen dimensions.
+- [ ] **Rewind**: Return to a previous game state.
+- [ ] **Enemy Movements**: Highlight enemy possible moves (in red).
+- [ ] **Game Settings**: Implement configurable game options (e.g., white/black, aim assist).
+- [ ] **Difficulty/Compute Time**: Adjust AI difficulty based on compute time (via max depth).
+- [ ] **Aim Assist**: Highlight better moves with darker color shades.
+- [ ] **Improve Performance**: Use multithreading/parallel execution.
+- [ ] **LLM Chess Player**: Add a large language model-based chess player for fun :) (and hallucinations (domain expansion, illegal moves, self-capture, etc.)).
 
 ## 🤝 Contribution
 
