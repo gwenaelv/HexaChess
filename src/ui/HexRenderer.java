@@ -46,15 +46,16 @@ class HexRenderer {
 		gc.setStroke(p.isWhite ? Color.BLACK : Color.WHITE);
 		gc.setLineWidth(2);
 		gc.strokeOval(x - offset, y - offset, size, size);
+		gc.setFill(p.isWhite ? Color.BLACK : Color.WHITE);
 		gc.setFont(Font.font(size * 0.666));
 		String label = String.valueOf(Character.toUpperCase(p.type.code));
 		gc.setTextAlign(TextAlignment.CENTER);
 		gc.setTextBaseline(VPos.CENTER);
-		gc.fillText(label, x, y);
+		gc.fillText(label, x, y - 1);
 	}
 	private void drawPiece(GraphicsContext gc, double x, double y, Piece p) {
 		Image img = PieceImageLoader.get((p.isWhite ? "w" : "b") + p.type.code);
-		if (img != null)
+		if (!img.isError())
 			drawPieceImage(gc, x, y, img);
 		else
 			drawPieceFallback(gc, x, y, p);
@@ -67,7 +68,7 @@ class HexRenderer {
 		String label = coord.q + "," + coord.r;
 		gc.setTextAlign(TextAlignment.CENTER);
 		gc.setTextBaseline(VPos.CENTER);
-		gc.fillText(label, x, y);
+		gc.fillText(label, x, y - 1);
 	}
 	*/
 	private void drawPath(GraphicsContext gc, Path path) {
