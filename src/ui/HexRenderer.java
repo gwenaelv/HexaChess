@@ -3,20 +3,27 @@ package src.ui;
 import src.model.AxialCoordinate;
 import src.model.Board;
 import src.model.Piece;
-import java.awt.BasicStroke;
-import java.awt.Color;
-import java.awt.Graphics2D;
-import java.awt.Image;
-import java.awt.Point;
-import java.awt.geom.Path2D;
+
 import java.util.List;
+import javafx.geometry.Point2D;
+import javafx.geometry.VPos;
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.image.Image;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.ClosePath;
+import javafx.scene.shape.LineTo;
+import javafx.scene.shape.MoveTo;
+import javafx.scene.shape.Path;
+import javafx.scene.shape.PathElement;
+import javafx.scene.text.Font;
+import javafx.scene.text.TextAlignment;
 
 class HexRenderer {
-	private static final Color SANDYBROWN = new Color(232, 171, 111);
-	private static final Color NAVAJOWHITE = new Color(255, 206, 158);
-	private static final Color PERU = new Color(209, 139, 71);
-	private static final Color LEGOYELLOW = new Color(255, 215, 0, 160);
-	private static final Color GREEN = new Color(46, 218, 119, 160);
+	private static final Color SANDYBROWN = Color.rgb(232, 171, 111);
+	private static final Color NAVAJOWHITE = Color.rgb(255, 206, 158);
+	private static final Color PERU = Color.rgb(209, 139, 71);
+	private static final Color LEGOYELLOW = Color.rgb(255, 215, 0, 0.63);
+	private static final Color GREEN = Color.rgb(46, 218, 119, 0.63);
 	private static final Color[] HEX_COLORS = {SANDYBROWN, NAVAJOWHITE, PERU};
 	private static final int[][] HEX_NEIGHBOR_OFFSETS = {
 		{-1, -1}, {0, -1}, {1, 0}, {1, 1}, {0, 1}, {-1, 0}};
@@ -26,67 +33,78 @@ class HexRenderer {
 		this.geometry = geometry;
 		this.board = board;
 	}
-	private void drawPieceImage(Graphics2D g2d, int x, int y, Image img) {
-		int size = (int) (geometry.getHexSize() * 1.5);
-		int offset = size / 2;
-		g2d.drawImage(img, x - offset, y - offset, size, size, null);
+	private void drawPieceImage(GraphicsContext gc, double x, double y, Image img) {
+		double size = geometry.getHexSize() * 1.5;
+		double offset = size / 2;
+		gc.drawImage(img, x - offset, y - offset, size, size);
 	}
-	private void drawPieceFallback(Graphics2D g2d, int x, int y, Piece p) {
-		int size = (int) geometry.getHexSize();
-		int offset = size / 2;
-		g2d.setColor(p.isWhite ? Color.WHITE : Color.BLACK);
-		g2d.fillOval(x - offset, y - offset, size, size);
-		g2d.setColor(p.isWhite ? Color.BLACK : Color.WHITE);
-		g2d.setStroke(new BasicStroke(2));
-		g2d.drawOval(x - offset, y - offset, size, size);
-		g2d.setFont(g2d.getFont().deriveFont((float) (size * 0.666)));
+	private void drawPieceFallback(GraphicsContext gc, double x, double y, Piece p) {
+		double size = geometry.getHexSize();
+		double offset = size / 2;
+		gc.setFill(p.isWhite ? Color.WHITE : Color.BLACK);
+		gc.fillOval(x - offset, y - offset, size, size);
+		gc.setStroke(p.isWhite ? Color.BLACK : Color.WHITE);
+		gc.setLineWidth(2);
+		gc.strokeOval(x - offset, y - offset, size, size);
+		gc.setFont(Font.font(size * 0.666));
 		String label = String.valueOf(Character.toUpperCase(p.type.code));
-		int textWidth = g2d.getFontMetrics().stringWidth(label);
-		int textHeight = g2d.getFontMetrics().getAscent();
-		g2d.drawString(label, x - textWidth / 2 + 1, y + textHeight / 3 + 1);
+		gc.setTextAlign(TextAlignment.CENTER);
+		gc.setTextBaseline(VPos.CENTER);
+		gc.fillText(label, x, y);
 	}
-	private void drawPiece(Graphics2D g2d, int x, int y, Piece p) {
+	private void drawPiece(GraphicsContext gc, double x, double y, Piece p) {
 		Image img = PieceImageLoader.get((p.isWhite ? "w" : "b") + p.type.code);
 		if (img != null)
-			drawPieceImage(g2d, x, y, img);
+			drawPieceImage(gc, x, y, img);
 		else
-			drawPieceFallback(g2d, x, y, p);
+			drawPieceFallback(gc, x, y, p);
 	}
 	/*
-	private void drawCoordinates(Graphics2D g2d, int x, int y, AxialCoordinate coord) {
-		int size = (int) geometry.getHexSize();
-		g2d.setColor(Color.RED);
-		g2d.setFont(g2d.getFont().deriveFont((float) (size * 0.666)));
+	private void drawCoordinates(GraphicsContext gc, double x, double y, AxialCoordinate coord) {
+		double size = geometry.getHexSize();
+		gc.setFill(Color.RED);
+		gc.setFont(Font.font(size * 0.666));
 		String label = coord.q + "," + coord.r;
-		int textWidth = g2d.getFontMetrics().stringWidth(label);
-		int textHeight = g2d.getFontMetrics().getAscent();
-		g2d.drawString(label, x - textWidth / 2, y + textHeight / 3);
+		gc.setTextAlign(TextAlignment.CENTER);
+		gc.setTextBaseline(VPos.CENTER);
+		gc.fillText(label, x, y);
 	}
 	*/
-	void drawHex(Graphics2D g2d, int cx, int cy, AxialCoordinate coord, AxialCoordinate selected,
-		List<AxialCoordinate> highlighted) {
-		Point center = geometry.hexToPixel(coord.q, coord.r, cx, cy);
-		Path2D hex = geometry.createHexPath(center);
-		g2d.setColor(HEX_COLORS[Math.floorMod(coord.q + coord.r, 3)]);
-		g2d.fill(hex);
-		g2d.draw(hex);
+	private void drawPath(GraphicsContext gc, Path path) {
+		gc.beginPath();
+		for (PathElement elem : path.getElements()) {
+			if (elem instanceof MoveTo move)
+				gc.moveTo(move.getX(), move.getY());
+			else if (elem instanceof LineTo line)
+				gc.lineTo(line.getX(), line.getY());
+			else if (elem instanceof ClosePath)
+				gc.closePath();
+		}
+	}
+	void drawHex(GraphicsContext gc, double cx, double cy, AxialCoordinate coord,
+		AxialCoordinate selected, List<AxialCoordinate> highlighted) {
+		Point2D center = geometry.hexToPixel(coord.q, coord.r, cx, cy);
+		Path hex = geometry.createHexPath(center);
+		gc.setFill(HEX_COLORS[Math.floorMod(coord.q + coord.r, 3)]);
+		drawPath(gc, hex);
+		gc.fill();
 		if (coord.equals(selected)) {
-			g2d.setColor(LEGOYELLOW);
-			g2d.fill(hex);
+			gc.setFill(LEGOYELLOW);
+			gc.fill();
 		} else if (highlighted.contains(coord)) {
-			g2d.setColor(GREEN);
-			g2d.fill(hex);
+			gc.setFill(GREEN);
+			gc.fill();
 		}
 		Piece p = board.getPiece(coord);
 		if (p != null)
-			drawPiece(g2d, center.x, center.y, p);
-		// drawCoordinates(g2d, center.x, center.y, coord);
+			drawPiece(gc, center.getX(), center.getY(), p);
+		// drawCoordinates(gc, center.getX(), center.getY(), coord);
 	}
-	private void drawCellBorder(Graphics2D g2d, int cx, int cy, int q, int r) {
+	private void drawCellBorder(GraphicsContext gc, double cx, double cy, int q, int r) {
 		AxialCoordinate coord = new AxialCoordinate(q, r);
 		if (!coord.isValid())
 			return;
-		Point center = geometry.hexToPixel(q, r, cx, cy);
+		Point2D center = geometry.hexToPixel(q, r, cx, cy);
 		double radius = geometry.getHexSize();
 		for (int i = 0; i < 6; i++) {
 			AxialCoordinate neighbor =
@@ -95,17 +113,17 @@ class HexRenderer {
 				continue;
 			int v1 = (i + 4) % 6;
 			int v2 = (i + 5) % 6;
-			int x1 = (int) (center.x + radius * HexGeometry.HEX_COS[v1]);
-			int y1 = (int) (center.y + radius * HexGeometry.HEX_SIN[v1]);
-			int x2 = (int) (center.x + radius * HexGeometry.HEX_COS[v2]);
-			int y2 = (int) (center.y + radius * HexGeometry.HEX_SIN[v2]);
-			g2d.drawLine(x1, y1, x2, y2);
+			double x1 = center.getX() + radius * HexGeometry.HEX_COS[v1];
+			double y1 = center.getY() + radius * HexGeometry.HEX_SIN[v1];
+			double x2 = center.getX() + radius * HexGeometry.HEX_COS[v2];
+			double y2 = center.getY() + radius * HexGeometry.HEX_SIN[v2];
+			gc.strokeLine(x1, y1, x2, y2);
 		}
 	}
-	void drawBoardBorder(Graphics2D g2d, int cx, int cy) {
-		g2d.setColor(Color.BLACK);
-		g2d.setStroke(new BasicStroke(3));
+	void drawBoardBorder(GraphicsContext gc, double cx, double cy) {
+		gc.setStroke(Color.BLACK);
+		gc.setLineWidth(3);
 		for (int q = -5; q <= 5; q++)
-			for (int r = -5; r <= 5; r++) drawCellBorder(g2d, cx, cy, q, r);
+			for (int r = -5; r <= 5; r++) drawCellBorder(gc, cx, cy, q, r);
 	}
 }

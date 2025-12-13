@@ -2,8 +2,11 @@ package src.ui;
 
 import src.model.AxialCoordinate;
 
-import java.awt.Point;
-import java.awt.geom.Path2D;
+import javafx.geometry.Point2D;
+import javafx.scene.shape.ClosePath;
+import javafx.scene.shape.LineTo;
+import javafx.scene.shape.MoveTo;
+import javafx.scene.shape.Path;
 
 class HexGeometry {
 	static final double[] HEX_COS = new double[6];
@@ -23,14 +26,14 @@ class HexGeometry {
 	double getHexSize() {
 		return radius;
 	}
-	Point hexToPixel(int q, int r, int cx, int cy) {
+	Point2D hexToPixel(int q, int r, double cx, double cy) {
 		double width = 2 * radius;
 		double height = SQRT3 * radius;
 		double quarterWidth = width * 3 / 4;
 		double halfHeight = height / 2;
-		int dx = (int) (quarterWidth * (q - r));
-		int dy = (int) (halfHeight * (q + r));
-		return new Point(cx + dx, cy + dy);
+		double dx = quarterWidth * (q - r);
+		double dy = halfHeight * (q + r);
+		return new Point2D(cx + dx, cy + dy);
 	}
 	private AxialCoordinate hexRound(double q, double r) {
 		double s = -q - r;
@@ -46,7 +49,7 @@ class HexGeometry {
 			rr = -rq - rs;
 		return new AxialCoordinate(rq, rr);
 	}
-	AxialCoordinate pixelToHex(int x, int y, int cx, int cy) {
+	AxialCoordinate pixelToHex(double x, double y, double cx, double cy) {
 		double dx = x - cx;
 		double dy = y - cy;
 		double width = 2 * radius;
@@ -57,17 +60,17 @@ class HexGeometry {
 		double r = (dy / halfHeight - dx / quarterWidth) / 2;
 		return hexRound(q, r);
 	}
-	Path2D createHexPath(Point center) {
-		Path2D path = new Path2D.Double();
+	Path createHexPath(Point2D center) {
+		Path path = new Path();
 		for (int i = 0; i < 6; i++) {
-			double vx = center.x + radius * HEX_COS[i];
-			double vy = center.y + radius * HEX_SIN[i];
+			double vx = center.getX() + radius * HEX_COS[i];
+			double vy = center.getY() + radius * HEX_SIN[i];
 			if (i == 0)
-				path.moveTo(vx, vy);
+				path.getElements().add(new MoveTo(vx, vy));
 			else
-				path.lineTo(vx, vy);
+				path.getElements().add(new LineTo(vx, vy));
 		}
-		path.closePath();
+		path.getElements().add(new ClosePath());
 		return path;
 	}
 }

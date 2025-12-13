@@ -1,10 +1,8 @@
 package src.ui;
 
-import java.awt.Image;
-import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
-import javax.imageio.ImageIO;
+import javafx.scene.image.Image;
 
 class PieceImageLoader {
 	private static final String BASE_URL =
@@ -12,7 +10,7 @@ class PieceImageLoader {
 	private static final Map<String, Image> images = new HashMap<>();
 	private static void loadImage(String key) {
 		try {
-			images.put(key, ImageIO.read(URI.create(BASE_URL + key + ".png").toURL()));
+			images.put(key, new Image(BASE_URL + key + ".png"));
 		} catch (Exception exception) {
 			System.err.println("Exception: " + exception.getMessage());
 		}
