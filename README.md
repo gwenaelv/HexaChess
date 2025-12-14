@@ -15,6 +15,85 @@ Gliński's hexagonal chess game implementation in Java.
 
 ![HexaChess](HexaChess.png)
 
+## 🚀 Installation
+
+### From Source
+
+```bash
+git clone https://github.com/Inc44/HexaChess.git
+```
+
+#### Eclipse
+
+```
+Open Projects from File System...
+Import source: `path/to/HexaChess`
+Finish
+```
+
+```
+Build Path > Configure Build Path... > Libraries > Modulepath
+Add Library... > User Library > Next > User Libraries... > New...
+User library name: `JavaFX21`
+Add External JARs...
+path/to/javafx-sdk-21/lib/*.jar
+Apply and Close
+Finish
+Apply and Close
+```
+
+```
+Run Configurations > Java Application > Main > Arguments
+VM arguments: `--module-path "path/to/javafx-sdk-21/lib" --add-modules javafx.controls,javafx.graphics`
+```
+
+#### Terminal
+
+Ensure these binaries are in your system's PATH:
+
+- Apache Maven - Version 3.9.11 tested
+- GraalVM CE Gluon - Version 23-dev+25.1 tested
+- JDK 21 - Version 21.0.9 tested
+
+On Arch Linux:
+
+```bash
+sudo pacman -S maven jdk21-openjdk
+sudo archlinux-java set java-21-openjdk
+export GRAALVM_HOME="path/to/graalvm-java23-gluon"
+```
+
+```bash
+mvn -v
+java --version
+$GRAALVM_HOME/bin/native-image --version
+```
+
+```bash
+cd HexaChess
+mvn clean gluonfx:run
+```
+
+On Windows:
+
+...
+
+## 🛠️ Build from Source
+
+### Desktop
+
+```bash
+mvn clean gluonfx:build
+mvn gluonfx:package
+```
+
+### Android
+
+```bash
+mvn clean gluonfx:build -Pandroid
+mvn gluonfx:package -Pandroid
+```
+
 ## 🐛 Bugs
 
 - The game continues despite checkmate, stalemate, or threefold repetition.
@@ -34,6 +113,15 @@ Gliński's hexagonal chess game implementation in Java.
 - [ ] **Aim Assist**: Highlight better moves with darker color shades.
 - [ ] **Improve Performance**: Use multithreading/parallel execution.
 - [ ] **LLM Chess Player**: Add a large language model-based chess player for fun :) (and hallucinations (domain expansion, illegal moves, self-capture, etc.)).
+
+## 🙏 Thanks
+
+Creators of:
+
+- [Apache Maven](https://maven.apache.org)
+- [GluonFX plugin for Maven](https://github.com/gluonhq/gluonfx-maven-plugin)
+- [GraalVM CE Gluon](https://github.com/gluonhq/graal)
+- [JavaFX](https://openjfx.io)
 
 ## 🤝 Contribution
 
