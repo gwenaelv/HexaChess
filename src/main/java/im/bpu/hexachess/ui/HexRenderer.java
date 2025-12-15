@@ -127,4 +127,7 @@ class HexRenderer {
 		for (int q = -5; q <= 5; q++)
 			for (int r = -5; r <= 5; r++) drawCellBorder(gc, cx, cy, q, r);
 	}
+	void setBoard(Board board) {
+		this.board = board;
+	}
 }

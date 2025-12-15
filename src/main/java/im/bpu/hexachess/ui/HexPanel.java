@@ -8,6 +8,7 @@ import im.bpu.hexachess.model.Piece;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Stack;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.layout.Pane;
@@ -20,6 +21,7 @@ public class HexPanel extends Pane {
 	private AxialCoordinate selected;
 	private List<AxialCoordinate> highlighted = new ArrayList<>();
 	private Canvas canvas;
+	private Stack<Board> history = new Stack<>();
 	public HexPanel(Board board) {
 		this.board = board;
 		this.renderer = new HexRenderer(geometry, board);
@@ -52,6 +54,7 @@ public class HexPanel extends Pane {
 		repaint();
 	}
 	private void executeMove(AxialCoordinate target) {
+		history.push(new Board(board));
 		board.movePiece(selected, target);
 		deselect();
 		Move bestMove = ai.getBestMove(board);
@@ -84,5 +87,18 @@ public class HexPanel extends Pane {
 			selectPiece(clicked);
 		else
 			deselect();
+	}
+	public void restart() {
+		board = new Board();
+		history.clear();
+		renderer.setBoard(board);
+		deselect();
+	}
+	public void rewind() {
+		if (!history.isEmpty()) {
+			board = history.pop();
+			renderer.setBoard(board);
+			deselect();
+		}
 	}
 }

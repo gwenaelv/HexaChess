@@ -106,7 +106,6 @@ mvn gluonfx:package -Pandroid
 ## 🚧 TODO
 
 - [ ] **Different Screen Sizes**: Adapt UI for various screen dimensions.
-- [ ] **Rewind**: Return to a previous game state.
 - [ ] **Enemy Movements**: Highlight enemy possible moves (in red).
 - [ ] **Game Settings**: Implement configurable game options (e.g., white/black, aim assist).
 - [ ] **Difficulty/Compute Time**: Adjust AI difficulty based on compute time (via max depth).
