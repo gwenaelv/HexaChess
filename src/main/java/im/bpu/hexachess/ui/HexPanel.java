@@ -11,9 +11,8 @@ import java.util.List;
 import java.util.Stack;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.layout.Pane;
 
-public class HexPanel extends Pane {
+public class HexPanel {
 	private Board board;
 	private AI ai = new AI();
 	private HexGeometry geometry = new HexGeometry(32);
@@ -22,11 +21,10 @@ public class HexPanel extends Pane {
 	private List<AxialCoordinate> highlighted = new ArrayList<>();
 	private Canvas canvas;
 	private Stack<Board> history = new Stack<>();
-	public HexPanel(Board board) {
+	public HexPanel(Canvas canvas, Board board) {
 		this.board = board;
 		this.renderer = new HexRenderer(geometry, board);
-		canvas = new Canvas(666, 666);
-		getChildren().add(canvas);
+		this.canvas = canvas;
 		PieceImageLoader.loadImages();
 		canvas.setOnMouseClicked(event -> handleMouseClick(event.getX(), event.getY()));
 		repaint();
