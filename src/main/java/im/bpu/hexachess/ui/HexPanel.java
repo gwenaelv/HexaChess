@@ -11,11 +11,12 @@ import java.util.List;
 import java.util.Stack;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.stage.Screen;
 
 public class HexPanel {
 	private Board board;
 	private AI ai = new AI();
-	private HexGeometry geometry = new HexGeometry(32);
+	private HexGeometry geometry;
 	private HexRenderer renderer;
 	private AxialCoordinate selected;
 	private List<AxialCoordinate> highlighted = new ArrayList<>();
@@ -23,6 +24,10 @@ public class HexPanel {
 	private Stack<Board> history = new Stack<>();
 	public HexPanel(Canvas canvas, Board board) {
 		this.board = board;
+		double width = Screen.getPrimary().getBounds().getWidth();
+		double height = Screen.getPrimary().getBounds().getHeight();
+		double aspectRatio = width / height;
+		this.geometry = new HexGeometry(aspectRatio > 1.5 ? 32 : 24);
 		this.renderer = new HexRenderer(geometry, board);
 		this.canvas = canvas;
 		PieceImageLoader.loadImages(this::repaint);
