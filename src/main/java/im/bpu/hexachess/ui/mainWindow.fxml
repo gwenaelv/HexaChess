@@ -5,6 +5,7 @@
 <?import javafx.scene.layout.HBox?>
 <GridPane xmlns:fx="http://javafx.com/fxml" alignment="center">
 	<Canvas fx:id="canvas" width="666" height="666" />
+	<Button fx:id="settingsHelpButton" text="⋮" onAction="#openSettings" GridPane.halignment="RIGHT" GridPane.valignment="TOP" styleClass="settings-help-button" />
 	<HBox alignment="center" spacing="16" GridPane.rowIndex="1">
 		<Button text="Restart" onAction="#restart" />
 		<Button text="Rewind" onAction="#rewind" />

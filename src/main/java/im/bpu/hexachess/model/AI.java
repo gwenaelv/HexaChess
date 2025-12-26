@@ -3,7 +3,7 @@ package im.bpu.hexachess.model;
 import java.util.List;
 
 public class AI {
-	private static final int MAX_DEPTH = 3;
+	private int maxDepth = 3;
 	// https://youtu.be/l-hh51ncgDI
 	private int evaluate(Board board) {
 		int eval = 0;
@@ -39,12 +39,15 @@ public class AI {
 		for (Move move : board.listMoves(false)) {
 			Board clone = new Board(board);
 			clone.movePiece(move.from, move.to);
-			int eval = minimax(clone, MAX_DEPTH - 1, alpha, beta, false);
+			int eval = minimax(clone, maxDepth - 1, alpha, beta, false);
 			if (eval > bestEval) {
 				bestEval = eval;
 				bestMove = move;
 			}
 		}
 		return bestMove;
+	}
+	public void setMaxDepth(int maxDepth) {
+		this.maxDepth = maxDepth;
 	}
 }

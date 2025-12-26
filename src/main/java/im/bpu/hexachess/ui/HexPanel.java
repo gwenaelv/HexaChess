@@ -1,5 +1,7 @@
 package im.bpu.hexachess.ui;
 
+import im.bpu.hexachess.Settings;
+import im.bpu.hexachess.State;
 import im.bpu.hexachess.model.AI;
 import im.bpu.hexachess.model.AxialCoordinate;
 import im.bpu.hexachess.model.Board;
@@ -8,27 +10,26 @@ import im.bpu.hexachess.model.Piece;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Stack;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.stage.Screen;
 
 public class HexPanel {
-	private Board board;
+	private State state;
 	private AI ai = new AI();
 	private HexGeometry geometry;
 	private HexRenderer renderer;
 	private AxialCoordinate selected;
 	private List<AxialCoordinate> highlighted = new ArrayList<>();
 	private Canvas canvas;
-	private Stack<Board> history = new Stack<>();
-	public HexPanel(Canvas canvas, Board board) {
-		this.board = board;
+	public HexPanel(Canvas canvas, State state) {
+		this.state = state;
+		ai.setMaxDepth(Settings.maxDepth);
 		double width = Screen.getPrimary().getBounds().getWidth();
 		double height = Screen.getPrimary().getBounds().getHeight();
 		double aspectRatio = width / height;
 		this.geometry = new HexGeometry(aspectRatio > 1.5 ? 32 : 24);
-		this.renderer = new HexRenderer(geometry, board);
+		this.renderer = new HexRenderer(geometry, state.board);
 		this.canvas = canvas;
 		PieceImageLoader.loadImages(this::repaint);
 		canvas.setOnMouseClicked(event -> handleMouseClick(event.getX(), event.getY()));
@@ -57,18 +58,18 @@ public class HexPanel {
 		repaint();
 	}
 	private void executeMove(AxialCoordinate target) {
-		history.push(new Board(board));
-		board.movePiece(selected, target);
+		state.history.push(new Board(state.board));
+		state.board.movePiece(selected, target);
 		deselect();
-		Move bestMove = ai.getBestMove(board);
+		Move bestMove = ai.getBestMove(state.board);
 		if (bestMove != null)
-			board.movePiece(bestMove.from, bestMove.to);
+			state.board.movePiece(bestMove.from, bestMove.to);
 		repaint();
 	}
 	private void selectPiece(AxialCoordinate coord) {
 		selected = coord;
 		highlighted.clear();
-		for (Move m : board.listMoves(board.isWhiteTurn))
+		for (Move m : state.board.listMoves(state.board.isWhiteTurn))
 			if (m.from.equals(coord))
 				highlighted.add(m.to);
 		repaint();
@@ -85,22 +86,22 @@ public class HexPanel {
 			executeMove(clicked);
 			return;
 		}
-		Piece p = board.getPiece(clicked);
-		if (p != null && p.isWhite == board.isWhiteTurn)
+		Piece p = state.board.getPiece(clicked);
+		if (p != null && p.isWhite == state.board.isWhiteTurn)
 			selectPiece(clicked);
 		else
 			deselect();
 	}
 	public void restart() {
-		board = new Board();
-		history.clear();
-		renderer.setBoard(board);
+		state.clear();
+		ai.setMaxDepth(Settings.maxDepth);
+		renderer.setBoard(state.board);
 		deselect();
 	}
 	public void rewind() {
-		if (!history.isEmpty()) {
-			board = history.pop();
-			renderer.setBoard(board);
+		if (!state.history.isEmpty()) {
+			state.board = state.history.pop();
+			renderer.setBoard(state.board);
 			deselect();
 		}
 	}
