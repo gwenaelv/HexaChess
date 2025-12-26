@@ -46,6 +46,11 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>${maven.compiler.plugin.version}</version>
+				<configuration>
+					<excludes>
+						<exclude>im/bpu/hexachess/dao/**</exclude>
+					</excludes>
+				</configuration>
 			</plugin>
 			<plugin>
 				<groupId>org.openjfx</groupId>
@@ -64,10 +69,15 @@
 					<mainClass>${main.class}</mainClass>
 					<reflectionList>
 						<list>im.bpu.hexachess.MainWindow</list>
+						<list>im.bpu.hexachess.SettingsWindow</list>
 						<list>javafx.scene.canvas.Canvas</list>
 						<list>javafx.scene.control.Button</list>
+						<list>javafx.scene.control.ComboBox</list>
+						<list>javafx.scene.control.Label</list>
 						<list>javafx.scene.layout.GridPane</list>
 						<list>javafx.scene.layout.HBox</list>
+						<list>javafx.scene.layout.StackPane</list>
+						<list>javafx.scene.layout.VBox</list>
 					</reflectionList>
 				</configuration>
 			</plugin>

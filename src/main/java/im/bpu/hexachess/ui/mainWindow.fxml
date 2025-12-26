@@ -1,13 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?import javafx.scene.canvas.Canvas?>
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
-<GridPane xmlns:fx="http://javafx.com/fxml" alignment="center">
-	<Canvas fx:id="canvas" width="666" height="666" />
-	<Button fx:id="settingsHelpButton" text="⋮" onAction="#openSettings" GridPane.halignment="RIGHT" GridPane.valignment="TOP" styleClass="settings-help-button" />
-	<HBox alignment="center" spacing="16" GridPane.rowIndex="1">
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<VBox xmlns:fx="http://javafx.com/fxml" alignment="center">
+	<StackPane>
+		<Canvas fx:id="canvas" width="666" height="666" />
+		<Button fx:id="settingsHelpButton" text="⋮" onAction="#openSettings" StackPane.alignment="TOP_RIGHT" styleClass="settings-help-button" />
+	</StackPane>
+	<HBox alignment="center" spacing="16">
 		<Button text="Restart" onAction="#restart" />
 		<Button text="Rewind" onAction="#rewind" />
 	</HBox>
-</GridPane>
+</VBox>
