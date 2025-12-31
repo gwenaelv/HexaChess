@@ -7,14 +7,15 @@ public class Player {
 	private String passwordHash;
 	private int rating;
 	private boolean isVerified;
-	private java.time.LocalDateTime joinedAt; 
+	private java.time.LocalDateTime joinedAt;
 
-	public Player(String playerId, String handle, String email, String passwordHash, int rating, boolean isVerified, java.time.LocalDateTime joinedAt) {
+	public Player(String playerId, String handle, String email, String passwordHash, int rating,
+		boolean isVerified, java.time.LocalDateTime joinedAt) {
 		this.playerId = playerId;
-        this.handle = handle;
-        this.email = email;
-        this.passwordHash = passwordHash;
-        this.rating = rating;
+		this.handle = handle;
+		this.email = email;
+		this.passwordHash = passwordHash;
+		this.rating = rating;
 		this.isVerified = isVerified;
 		this.joinedAt = joinedAt;
 	}

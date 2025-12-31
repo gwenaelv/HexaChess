@@ -52,7 +52,8 @@ public class MainWindow {
 	@FXML
 	private void openSettings() {
 		try {
-			FXMLLoader settingsWindowLoader = new FXMLLoader(getClass().getResource("ui/settingsWindow.fxml"));
+			FXMLLoader settingsWindowLoader =
+				new FXMLLoader(getClass().getResource("ui/settingsWindow.fxml"));
 			Parent root = settingsWindowLoader.load();
 			settingsHelpButton.getScene().setRoot(root);
 		} catch (Exception exception) {
@@ -61,24 +62,24 @@ public class MainWindow {
 	}
 
 	@FXML
-    private void goToLogin() {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("ui/login.fxml"));
-            Parent root = loader.load();
-            settingsHelpButton.getScene().setRoot(root);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+	private void goToLogin() {
+		try {
+			FXMLLoader loader = new FXMLLoader(getClass().getResource("ui/login.fxml"));
+			Parent root = loader.load();
+			settingsHelpButton.getScene().setRoot(root);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 
-    @FXML
-    private void goToRegister() {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("ui/register.fxml"));
-            Parent root = loader.load();
-            settingsHelpButton.getScene().setRoot(root);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+	@FXML
+	private void goToRegister() {
+		try {
+			FXMLLoader loader = new FXMLLoader(getClass().getResource("ui/register.fxml"));
+			Parent root = loader.load();
+			settingsHelpButton.getScene().setRoot(root);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 }

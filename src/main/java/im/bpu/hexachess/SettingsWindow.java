@@ -31,7 +31,8 @@ public class SettingsWindow {
 			Settings.save();
 		}
 		try {
-			FXMLLoader mainWindowLoader = new FXMLLoader(getClass().getResource("ui/mainWindow.fxml"));
+			FXMLLoader mainWindowLoader =
+				new FXMLLoader(getClass().getResource("ui/mainWindow.fxml"));
 			Parent root = mainWindowLoader.load();
 			backButton.getScene().setRoot(root);
 		} catch (Exception exception) {
