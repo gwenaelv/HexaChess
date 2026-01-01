@@ -20,6 +20,18 @@ public class RegisterWindow {
 
 	@FXML
 	private void handleRegister() {
+		if (handleField.getText().isEmpty()) {
+			handleField.requestFocus();
+			return;
+		}
+		if (emailField.getText().isEmpty()) {
+			emailField.requestFocus();
+			return;
+		}
+		if (passwordField.getText().isEmpty()) {
+			passwordField.requestFocus();
+			return;
+		}
 		PlayerDAO dao = new PlayerDAO();
 		String id = UUID.randomUUID().toString().substring(0, 11);
 		String handle = handleField.getText();

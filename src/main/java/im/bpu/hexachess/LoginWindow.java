@@ -18,6 +18,14 @@ public class LoginWindow {
 
 	@FXML
 	private void handleLogin() {
+		if (handleField.getText().isEmpty()) {
+			handleField.requestFocus();
+			return;
+		}
+		if (passwordField.getText().isEmpty()) {
+			passwordField.requestFocus();
+			return;
+		}
 		String handle = handleField.getText();
 		String pass = passwordField.getText();
 
