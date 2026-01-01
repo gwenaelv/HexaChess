@@ -33,7 +33,7 @@ public class LoginWindow {
 					loginSuccess = true;
 				}
 			}
-			System.out.println("Connecté en tant que : " + p.getHandle());
+			System.out.println("Connected as: " + (p != null ? p.getHandle() : "null"));
 			dao.close();
 		}
 
@@ -50,9 +50,8 @@ public class LoginWindow {
 				exception.printStackTrace();
 			}
 		} else {
-			errorLabel.setText("Pseudo ou mot de passe incorrect");
+			errorLabel.setText("Invalid username or password");
 			errorLabel.setVisible(true);
-			errorLabel.setStyle("-fx-text-fill: red;");
 		}
 	}
 

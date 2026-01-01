@@ -38,9 +38,8 @@ public class RegisterWindow {
 			handleField.getScene().setRoot(root);
 		} catch (Exception exception) {
 			exception.printStackTrace();
-			statusLabel.setText("Erreur (Pseudo déjà pris ?)");
+			statusLabel.setText("Error (Username taken?)");
 			statusLabel.setVisible(true);
-			statusLabel.setStyle("-fx-text-fill: red;");
 		}
 		dao.close();
 	}

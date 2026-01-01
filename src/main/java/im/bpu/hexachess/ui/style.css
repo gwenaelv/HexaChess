@@ -3,10 +3,12 @@
 	-fx-background-color: white;
 }
 
-.label,
 .button,
 .combo-box .list-cell,
-.combo-box-popup .list-cell
+.combo-box-popup .list-cell,
+.label,
+.password-field,
+.text-field
 {
 	-fx-font-family: "Monospaced";
 	-fx-font-size: 16px;
@@ -21,7 +23,9 @@
 
 .button,
 .combo-box .list-cell,
-.combo-box-popup .list-cell
+.combo-box-popup .list-cell,
+.password-field,
+.text-field
 {
 	-fx-padding: 8 16;
 }
@@ -33,7 +37,9 @@
 
 .button,
 .combo-box-base,
-.combo-box-popup .list-view
+.combo-box-popup .list-view,
+.password-field,
+.text-field
 {
 	/* sandybrown */
 	-fx-background-color: rgb(232, 171, 111);
@@ -43,6 +49,13 @@
 	-fx-border-width: 3px;
 }
 
+.text-field,
+.password-field
+{
+	-fx-background-color: white;
+	-fx-pref-width: 240px;
+}
+
 .button,
 .combo-box-base
 {
@@ -50,7 +63,10 @@
 }
 
 .button:hover,
-.combo-box-base:hover
+.combo-box-base:hover,
+.combo-box-popup .list-cell:filled:hover,
+.password-field:focused,
+.text-field:focused
 {
 	/* navajowhite */
 	-fx-background-color: rgb(255, 206, 158);
@@ -90,10 +106,11 @@
 	-fx-background-color: transparent;
 }
 
-.combo-box-popup .list-cell:filled:hover
+#errorLabel,
+#statusLabel
 {
-	/* navajowhite */
-	-fx-background-color: rgb(255, 206, 158);
+	/* red */
+	-fx-text-fill: rgb(237, 53, 36);
 }
 
 #loginButton,

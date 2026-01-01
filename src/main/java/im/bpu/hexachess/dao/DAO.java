@@ -18,7 +18,7 @@ public abstract class DAO<T> {
 			stmt = connect.createStatement(
 				ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
 		} catch (Exception exception) {
-			System.out.println(" === ERREUR OPEN DAO === ");
+			System.err.println("DAO Open Error");
 			exception.printStackTrace();
 		}
 	}
@@ -27,7 +27,7 @@ public abstract class DAO<T> {
 		try {
 			SingleConnection.close();
 		} catch (Exception exception) {
-			System.out.println(" === ERREUR CLOSE DAO === ");
+			System.err.println("DAO Close Error");
 			exception.printStackTrace();
 		}
 	}
