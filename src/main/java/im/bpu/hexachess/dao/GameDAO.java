@@ -1,14 +1,14 @@
 package im.bpu.hexachess.dao;
 
-import im.bpu.hexachess.entity.GameEntity;
+import im.bpu.hexachess.entity.Game;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 
-public class GameDAO extends DAO<GameEntity> {
+public class GameDAO extends DAO<Game> {
 	@Override
-	public GameEntity create(GameEntity obj) {
+	public Game create(Game obj) {
 		String requete = "INSERT INTO games (game_id, white_player_id, black_player_id, winner_id, "
 			+ "tournament_id, moves, start_time, end_time, victory_type) VALUES(?, ?, "
 			+ "?, ?, ?, ?, ?, ?, ?)";
@@ -41,7 +41,7 @@ public class GameDAO extends DAO<GameEntity> {
 	}
 
 	@Override
-	public GameEntity update(GameEntity obj) {
+	public Game update(Game obj) {
 		String requete = "UPDATE games SET moves = ?, end_time = ?, winner_id = ?, victory_type = "
 			+ "? WHERE game_id = ?";
 		try {
@@ -65,7 +65,7 @@ public class GameDAO extends DAO<GameEntity> {
 	}
 
 	@Override
-	public void delete(GameEntity obj) {
+	public void delete(Game obj) {
 		String requete = "DELETE FROM games WHERE game_id = ?";
 		try {
 			PreparedStatement pstmt = connect.prepareStatement(requete);
@@ -76,15 +76,15 @@ public class GameDAO extends DAO<GameEntity> {
 		}
 	}
 
-	public GameEntity read(String id) {
-		GameEntity g = null;
+	public Game read(String id) {
+		Game g = null;
 		String requete = "SELECT * FROM games WHERE game_id = ?";
 		try {
 			PreparedStatement pstmt = connect.prepareStatement(requete);
 			pstmt.setString(1, id);
 			ResultSet rs = pstmt.executeQuery();
 			if (rs.next()) {
-				g = new GameEntity(rs.getString("game_id"), rs.getString("white_player_id"),
+				g = new Game(rs.getString("game_id"), rs.getString("white_player_id"),
 					rs.getString("black_player_id"), rs.getString("winner_id"),
 					rs.getString("tournament_id"), rs.getString("moves"),
 					rs.getTimestamp("start_time") != null
