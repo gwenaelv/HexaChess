@@ -34,9 +34,11 @@ public class LoginWindow {
 		if (loginSuccess) {
 			System.out.println("Connecté en tant que : " + p.getHandle());
 			try {
-				FXMLLoader loader = new FXMLLoader(getClass().getResource("ui/mainWindow.fxml"));
-				Parent root = loader.load();
-				MainWindow controller = loader.getController();
+				FXMLLoader mainWindowLoader =
+					new FXMLLoader(getClass().getResource("ui/mainWindow.fxml"));
+				mainWindowLoader.setController(new MainWindow());
+				Parent root = mainWindowLoader.load();
+				MainWindow controller = mainWindowLoader.getController();
 				controller.setSession(p);
 				handleField.getScene().setRoot(root);
 			} catch (Exception e) {
@@ -53,8 +55,10 @@ public class LoginWindow {
 	@FXML
 	private void goBack() {
 		try {
-			FXMLLoader loader = new FXMLLoader(getClass().getResource("ui/mainWindow.fxml"));
-			Parent root = loader.load();
+			FXMLLoader mainWindowLoader =
+				new FXMLLoader(getClass().getResource("ui/mainWindow.fxml"));
+			mainWindowLoader.setController(new MainWindow());
+			Parent root = mainWindowLoader.load();
 			handleField.getScene().setRoot(root);
 		} catch (Exception e) {
 			e.printStackTrace();

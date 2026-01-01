@@ -54,6 +54,7 @@ public class MainWindow {
 		try {
 			FXMLLoader settingsWindowLoader =
 				new FXMLLoader(getClass().getResource("ui/settingsWindow.fxml"));
+			settingsWindowLoader.setController(new SettingsWindow());
 			Parent root = settingsWindowLoader.load();
 			settingsHelpButton.getScene().setRoot(root);
 		} catch (Exception exception) {
