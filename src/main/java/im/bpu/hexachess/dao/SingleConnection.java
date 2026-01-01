@@ -10,7 +10,7 @@ public class SingleConnection {
 	private SingleConnection() throws ClassNotFoundException, SQLException {
 		String url = "jdbc:mysql://127.0.0.1:3306/hexachess?serverTimezone=UTC";
 		String login = "root";
-		String password = "";
+		String password = getPassword();
 
 		MysqlDataSource mysqlDS = new MysqlDataSource();
 		mysqlDS.setURL(url);
@@ -19,6 +19,15 @@ public class SingleConnection {
 
 		connect = mysqlDS.getConnection();
 	}
+
+	private String getPassword() {
+		String osName = System.getProperty("os.name").toLowerCase();
+		if (osName.contains("win")) {
+			return "";
+		}
+		return "password123";
+	}
+
 	public static Connection getInstance() throws ClassNotFoundException, SQLException {
 		if (connect == null || connect.isClosed()) {
 			new SingleConnection();
