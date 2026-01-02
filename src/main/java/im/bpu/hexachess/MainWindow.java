@@ -76,6 +76,18 @@ public class MainWindow {
 		menu.show(settingsHelpButton, Side.BOTTOM, 0, 0);
 	}
 	@FXML
+	private void openSearch() {
+		try {
+			FXMLLoader searchWindowLoader =
+				new FXMLLoader(getClass().getResource("ui/searchWindow.fxml"));
+			searchWindowLoader.setController(new SearchWindow());
+			Parent root = searchWindowLoader.load();
+			settingsHelpButton.getScene().setRoot(root);
+		} catch (Exception exception) {
+			exception.printStackTrace();
+		}
+	}
+	@FXML
 	private void openProfile() {
 		try {
 			FXMLLoader profileWindowLoader =

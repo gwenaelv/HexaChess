@@ -138,4 +138,20 @@ public class PlayerDAO extends DAO<Player> {
 		}
 		return p;
 	}
+	public ArrayList<Player> searchPlayers(String query) {
+		ArrayList<Player> players = new ArrayList<>();
+		String requete = "SELECT * FROM players WHERE handle LIKE ?";
+		try {
+			PreparedStatement pstmt = connect.prepareStatement(requete);
+			pstmt.setString(1, "%" + query + "%");
+			ResultSet rs = pstmt.executeQuery();
+			while (rs.next()) {
+				players.add(resultSetToPlayer(rs));
+			}
+			rs.close();
+		} catch (SQLException exception) {
+			exception.printStackTrace();
+		}
+		return players;
+	}
 }

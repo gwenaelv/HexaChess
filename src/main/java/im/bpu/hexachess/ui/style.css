@@ -45,6 +45,7 @@
 .combo-box-base,
 .combo-box-popup .list-view,
 .password-field,
+.player-item,
 .profile-container,
 .text-field
 {
@@ -69,10 +70,18 @@
 }
 
 .button,
-.combo-box-base
+.combo-box-base,
+.player-item
 {
 	-fx-cursor: hand;
 	cursor: hand;
+}
+
+.password-field,
+.text-field
+{
+	-fx-cursor: text;
+	cursor: text;
 }
 
 .button:hover,
@@ -81,6 +90,7 @@
 .menu-item:focused,
 .menu-item:hover,
 .password-field:focused,
+.player-item:hover,
 .sidebar-item:hover,
 .text-field:focused
 {
@@ -90,7 +100,8 @@
 }
 
 .button:pressed,
-.menu-item:pressed
+.menu-item:pressed,
+.player-item:pressed
 {
 	/* peru */
 	-fx-background-color: rgb(209, 139, 71);
@@ -230,6 +241,56 @@
 {
 	-fx-font-size: 13px;
 	font-size: 13px;
+}
+
+.scroll-pane
+{
+	-fx-background-color: transparent;
+	-fx-border-color: black;
+	-fx-border-radius: 6;
+	-fx-border-width: 3px;
+	-fx-fit-to-width: true;
+	-fx-max-height: 480px;
+	-fx-max-width: 480px;
+	-fx-min-height: 320px;
+	background-color: transparent;
+	border-color: black;
+	border-radius: 6;
+	border-width: 3px;
+	max-height: 480px;
+	max-width: 480px;
+	min-height: 320px;
+}
+
+.scroll-pane .viewport
+{
+	-fx-background-color: white;
+	-fx-background-radius: 6;
+	background-color: white;
+}
+
+.scroll-bar .decrement-button,
+.scroll-bar .increment-button,
+.scroll-bar:horizontal,
+.scroll-bar:vertical
+{
+	-fx-background-color: transparent;
+	background-color: transparent;
+}
+
+.scroll-bar:vertical .thumb,
+.scroll-bar:horizontal .thumb
+{
+	-fx-background-color: black;
+	-fx-background-radius: 6;
+	background-color: black;
+}
+
+.player-item,
+#playerContainer
+{
+	-fx-padding: 16;
+	padding: 16;
 }
 
 .country-cn

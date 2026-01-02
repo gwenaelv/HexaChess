@@ -13,6 +13,7 @@ import java.net.InetSocketAddress;
 import java.security.Key;
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.List;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -33,6 +34,7 @@ public class Server {
 		HttpServer server = HttpServer.create(new InetSocketAddress(PORT), 0);
 		server.createContext("/api/login", new LoginHandler());
 		server.createContext("/api/register", new RegisterHandler());
+		server.createContext("/api/search", new SearchHandler());
 		server.createContext("/api/profile", new ProfileHandler());
 		server.setExecutor(null);
 		server.start();
@@ -92,6 +94,28 @@ public class Server {
 			} catch (Exception exception) {
 				exception.printStackTrace();
 				sendResponse(exchange, 409, "Conflict: Username taken or server error");
+			}
+		}
+	}
+	static class SearchHandler implements HttpHandler {
+		@Override
+		public void handle(HttpExchange exchange) throws IOException {
+			if (!"GET".equalsIgnoreCase(exchange.getRequestMethod())) {
+				sendResponse(exchange, 405, "Method Not Allowed");
+				return;
+			}
+			try {
+				String query = exchange.getRequestURI().getQuery();
+				String handle = (query != null && query.contains("=")) ? query.split("=")[1] : "";
+				PlayerDAO dao = new PlayerDAO();
+				List<Player> players = dao.searchPlayers(handle);
+				dao.close();
+				for (Player p : players) p.setPasswordHash(null);
+				String response = mapper.writeValueAsString(players);
+				sendResponse(exchange, 200, response);
+			} catch (Exception exception) {
+				exception.printStackTrace();
+				sendResponse(exchange, 500, "Internal Server Error");
 			}
 		}
 	}
