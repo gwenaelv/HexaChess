@@ -8,7 +8,7 @@ import javafx.scene.control.Button;
 public class StartWindow {
 	@FXML private Button loginButton;
 	@FXML
-	private void goToLogin() {
+	private void openLogin() {
 		try {
 			FXMLLoader loginWindowLoader =
 				new FXMLLoader(getClass().getResource("ui/loginWindow.fxml"));
@@ -20,7 +20,7 @@ public class StartWindow {
 		}
 	}
 	@FXML
-	private void goToRegister() {
+	private void openRegister() {
 		try {
 			FXMLLoader registerWindowLoader =
 				new FXMLLoader(getClass().getResource("ui/registerWindow.fxml"));
