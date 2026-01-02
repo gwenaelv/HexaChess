@@ -1,6 +1,7 @@
 .root
 {
 	-fx-background-color: white;
+	background-color: white;
 }
 
 .button,
@@ -14,11 +15,15 @@
 	-fx-font-size: 16px;
 	-fx-font-weight: bold;
 	-fx-text-fill: black;
+	font-family: "Monospaced";
+	font-size: 16px;
+	font-weight: bold;
 }
 
 .h2
 {
 	-fx-font-size: 24px;
+	font-size: 24px;
 }
 
 .button,
@@ -28,6 +33,7 @@
 .text-field
 {
 	-fx-padding: 8 16;
+	padding: 8 16;
 }
 
 .button
@@ -47,6 +53,10 @@
 	-fx-border-color: black;
 	-fx-border-radius: 6;
 	-fx-border-width: 3px;
+	background-color: rgb(232, 171, 111);
+	border-color: black;
+	border-radius: 6;
+	border-width: 3px;
 }
 
 .text-field,
@@ -54,12 +64,14 @@
 {
 	-fx-background-color: white;
 	-fx-pref-width: 240px;
+	background-color: white;
 }
 
 .button,
 .combo-box-base
 {
 	-fx-cursor: hand;
+	cursor: hand;
 }
 
 .button:hover,
@@ -70,12 +82,14 @@
 {
 	/* navajowhite */
 	-fx-background-color: rgb(255, 206, 158);
+	background-color: rgb(255, 206, 158);
 }
 
 .button:pressed
 {
 	/* peru */
 	-fx-background-color: rgb(209, 139, 71);
+	background-color: rgb(209, 139, 71);
 }
 
 .settings-help-button
@@ -87,6 +101,11 @@
 	-fx-padding: 6 0;
 	-fx-pref-width: 54px;
 	-fx-text-fill: black;
+	background-color: transparent;
+	border-color: transparent;
+	cursor: hand;
+	font-size: 24px;
+	padding: 6 0;
 }
 
 .settings-help-button:hover,
@@ -94,16 +113,19 @@
 {
 	-fx-background-color: rgba(0, 0, 0, 0.06);
 	-fx-background-radius: 27;
+	background-color: rgba(0, 0, 0, 0.06);
 }
 
 .combo-box .arrow
 {
 	-fx-background-color: black;
+	background-color: black;
 }
 
 .combo-box .list-cell
 {
 	-fx-background-color: transparent;
+	background-color: transparent;
 }
 
 #errorLabel,
