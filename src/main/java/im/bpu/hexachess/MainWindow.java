@@ -75,4 +75,16 @@ public class MainWindow {
 		menu.getItems().addAll(settingsItem, helpItem);
 		menu.show(settingsHelpButton, Side.BOTTOM, 0, 0);
 	}
+	@FXML
+	private void openProfile() {
+		try {
+			FXMLLoader profileWindowLoader =
+				new FXMLLoader(getClass().getResource("ui/profileWindow.fxml"));
+			profileWindowLoader.setController(new ProfileWindow());
+			Parent root = profileWindowLoader.load();
+			settingsHelpButton.getScene().setRoot(root);
+		} catch (Exception exception) {
+			exception.printStackTrace();
+		}
+	}
 }

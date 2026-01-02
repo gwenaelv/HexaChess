@@ -33,6 +33,7 @@ public class Server {
 		HttpServer server = HttpServer.create(new InetSocketAddress(PORT), 0);
 		server.createContext("/api/login", new LoginHandler());
 		server.createContext("/api/register", new RegisterHandler());
+		server.createContext("/api/profile", new ProfileHandler());
 		server.setExecutor(null);
 		server.start();
 		System.out.println("HexaChess Server started on port " + PORT);
@@ -91,6 +92,32 @@ public class Server {
 			} catch (Exception exception) {
 				exception.printStackTrace();
 				sendResponse(exchange, 409, "Conflict: Username taken or server error");
+			}
+		}
+	}
+	static class ProfileHandler implements HttpHandler {
+		@Override
+		public void handle(HttpExchange exchange) throws IOException {
+			if (!"GET".equalsIgnoreCase(exchange.getRequestMethod())) {
+				sendResponse(exchange, 405, "Method Not Allowed");
+				return;
+			}
+			try {
+				String query = exchange.getRequestURI().getQuery();
+				String handle = query.split("=")[1];
+				PlayerDAO dao = new PlayerDAO();
+				Player p = dao.getPlayerByHandle(handle);
+				dao.close();
+				if (p != null) {
+					p.setPasswordHash(null);
+					String response = mapper.writeValueAsString(p);
+					sendResponse(exchange, 200, response);
+				} else {
+					sendResponse(exchange, 404, "Not Found");
+				}
+			} catch (Exception exception) {
+				exception.printStackTrace();
+				sendResponse(exchange, 500, "Internal Server Error");
 			}
 		}
 	}

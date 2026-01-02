@@ -66,4 +66,17 @@ public class API {
 			return false;
 		}
 	}
+	public static Player profile(String handle) {
+		try {
+			HttpRequest.Builder requestBuilder =
+				HttpRequest.newBuilder().GET().timeout(Duration.ofSeconds(6));
+			HttpResponse<String> response =
+				sendWithFallback(requestBuilder, "/profile?handle=" + handle);
+			if (response.statusCode() == 200)
+				return mapper.readValue(response.body(), Player.class);
+		} catch (Exception exception) {
+			exception.printStackTrace();
+		}
+		return null;
+	}
 }

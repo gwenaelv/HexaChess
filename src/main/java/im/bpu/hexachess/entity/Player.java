@@ -1,5 +1,7 @@
 package im.bpu.hexachess.entity;
 
+import java.time.LocalDateTime;
+
 public class Player {
 	private String playerId;
 	private String handle;
@@ -7,13 +9,15 @@ public class Player {
 	private String passwordHash;
 	private int rating;
 	private boolean isVerified;
-	private java.time.LocalDateTime joinedAt;
+	private LocalDateTime joinedAt;
 	private String token;
+	private String avatar;
+	private String location;
 
 	public Player() {}
 
 	public Player(String playerId, String handle, String email, String passwordHash, int rating,
-		boolean isVerified, java.time.LocalDateTime joinedAt) {
+		boolean isVerified, LocalDateTime joinedAt) {
 		this.playerId = playerId;
 		this.handle = handle;
 		this.email = email;
@@ -71,11 +75,11 @@ public class Player {
 		this.isVerified = isVerified;
 	}
 
-	public java.time.LocalDateTime getJoinedAt() {
+	public LocalDateTime getJoinedAt() {
 		return joinedAt;
 	}
 
-	public void setJoinedAt(java.time.LocalDateTime joinedAt) {
+	public void setJoinedAt(LocalDateTime joinedAt) {
 		this.joinedAt = joinedAt;
 	}
 
@@ -85,5 +89,21 @@ public class Player {
 
 	public void setToken(String token) {
 		this.token = token;
+	}
+
+	public String getAvatar() {
+		return avatar;
+	}
+
+	public void setAvatar(String avatar) {
+		this.avatar = avatar;
+	}
+
+	public String getLocation() {
+		return location;
+	}
+
+	public void setLocation(String location) {
+		this.location = location;
 	}
 }

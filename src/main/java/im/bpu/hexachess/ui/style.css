@@ -45,6 +45,7 @@
 .combo-box-base,
 .combo-box-popup .list-view,
 .password-field,
+.profile-container,
 .text-field
 {
 	/* sandybrown */
@@ -183,4 +184,122 @@
 #signUpButton
 {
 	-fx-pref-width: 128px;
+}
+
+.profile-container
+{
+	-fx-padding: 16;
+	-fx-max-width: 320px;
+	padding: 16;
+	max-width: 320px;
+}
+
+.avatar-container
+{
+	-fx-border-color: black;
+	-fx-border-width: 3px;
+	-fx-background-color: white;
+	border-color: black;
+	border-width: 3px;
+	background-color: white;
+}
+
+.country-flags-large
+{
+	-fx-background-image: url("https://www.chess.com/bundles/web/images/sprites/flags-128.png");
+	-fx-background-size: 432px 824px;
+	-fx-max-height: 24px;
+	-fx-max-width: 32px;
+	-fx-min-height: 24px;
+	-fx-min-width: 32px;
+	background-image: url("https://www.chess.com/bundles/web/images/sprites/flags-128.png");
+	background-size: 432px 824px;
+	max-height: 24px;
+	max-width: 32px;
+	min-height: 24px;
+	min-width: 32px;
+}
+
+.profile-stat
+{
+	-fx-font-size: 16px;
+	font-size: 16px;
+}
+
+.profile-info
+{
+	-fx-font-size: 13px;
+	font-size: 13px;
+}
+
+.country-cn
+{
+	-fx-background-position: 90% 12%;
+	background-position: 90% 12%;
+}
+
+.country-de
+{
+	-fx-background-position: 60% 16%;
+	background-position: 60% 16%;
+}
+
+.country-es
+{
+	-fx-background-position: 60% 20%;
+	background-position: 60% 20%;
+}
+
+.country-fr
+{
+	-fx-background-position: 40% 24%;
+	background-position: 40% 24%;
+}
+
+.country-it
+{
+	-fx-background-position: 70% 36%;
+	background-position: 70% 36%;
+}
+
+.country-jp
+{
+	-fx-background-position: 0 40%;
+	background-position: 0 40%;
+}
+
+.country-kr
+{
+	-fx-background-position: 80% 40%;
+	background-position: 80% 40%;
+}
+
+.country-pl
+{
+	-fx-background-position: 70% 60%;
+	background-position: 70% 60%;
+}
+
+.country-ro
+{
+	-fx-background-position: 50% 64%;
+	background-position: 50% 64%;
+}
+
+.country-ru
+{
+	-fx-background-position: 70% 64%;
+	background-position: 70% 64%;
+}
+
+.country-ua
+{
+	-fx-background-position: 90% 76%;
+	background-position: 90% 76%;
+}
+
+.country-us
+{
+	-fx-background-position: 0 80%;
+	background-position: 0 80%;
 }

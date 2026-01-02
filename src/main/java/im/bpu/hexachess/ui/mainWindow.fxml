@@ -16,7 +16,7 @@
 	<Button fx:id="settingsHelpButton" text="⋮" onAction="#openHelpSettings" StackPane.alignment="top_right" styleClass="settings-help-button" />
 	<VBox fx:id="sidebar" styleClass="sidebar" maxWidth="160">
 		<Button text="Search" onAction="#openSettings" styleClass="sidebar-item" />
-		<Button text="Profile" onAction="#openSettings" styleClass="sidebar-item" />
+		<Button text="Profile" onAction="#openProfile" styleClass="sidebar-item" />
 		<Button text="Achievements" onAction="#openSettings" styleClass="sidebar-item" />
 		<Button text="Puzzles" onAction="#openSettings" styleClass="sidebar-item" />
 		<Button text="Tournaments" onAction="#openSettings" styleClass="sidebar-item" />
