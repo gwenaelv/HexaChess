@@ -60,6 +60,9 @@ public class ProfileWindow {
 			String country = COUNTRIES.getOrDefault(location, location);
 			locationLabel.setText(country);
 			countryFlagIcon.getStyleClass().add("country-" + location);
+		} else {
+			countryFlagIcon.setManaged(false);
+			countryFlagIcon.setVisible(false);
 		}
 		if (joinedAt != null) {
 			joinedAtLabel.setText(
