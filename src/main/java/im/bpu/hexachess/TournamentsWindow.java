@@ -18,37 +18,41 @@ import javafx.scene.layout.VBox;
 public class TournamentsWindow {
 	@FXML private VBox tournamentContainer;
 	@FXML private Button backButton;
+	@FXML private Label statusLabel = new Label();
+	@FXML private Label nameLabel = new Label();
+	@FXML private Label dateLabel = new Label();
+	@FXML private Label descLabel = new Label();
 	@FXML
 	private void initialize() {
 		List<Tournament> tournaments = API.tournaments();
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd MMM yyyy HH:mm");
 		if (tournaments.isEmpty()) {
-			Label emptyLabel = new Label("No tournaments found.");
-			tournamentContainer.getChildren().add(emptyLabel);
+			statusLabel.setText("No tournaments found.");
+			tournamentContainer.getChildren().add(statusLabel);
 		} else {
-			for (Tournament t : tournaments) {
+			for (Tournament tournament : tournaments) {
 				VBox card = new VBox(8);
 				card.getStyleClass().add("player-item");
 				HBox header = new HBox(10);
-				Label nameLabel = new Label(t.getName());
+				nameLabel.setText(tournament.getName());
 				nameLabel.setStyle("-fx-font-size: 18px; -fx-text-fill: black;");
 				Region spacer = new Region();
 				HBox.setHgrow(spacer, Priority.ALWAYS);
-				String dateStr =
-					(t.getStartTime() != null) ? t.getStartTime().format(formatter) : "TBD";
-				Label dateLabel = new Label(dateStr);
+				String dateStr = (tournament.getStartTime() != null)
+					? tournament.getStartTime().format(
+						  DateTimeFormatter.ofPattern("MMM d yyyy HH:mm"))
+					: "TBD";
+				dateLabel.setText(dateStr);
 				dateLabel.setStyle("-fx-font-size: 12px;");
 				header.getChildren().addAll(nameLabel, spacer, dateLabel);
-				Label descLabel = new Label(t.getDescription());
+				descLabel.setText(tournament.getDescription());
 				descLabel.setWrapText(true);
 				descLabel.setStyle("-fx-font-weight: normal; -fx-font-size: 14px;");
-				Label statusLabel;
-				if (t.getWinnerId() != null) {
-					statusLabel = new Label("Winner ID: " + t.getWinnerId());
+				if (tournament.getWinnerId() != null) {
+					statusLabel.setText("Winner ID: " + tournament.getWinnerId());
 					statusLabel.setStyle("-fx-text-fill: #2E8B57;");
 				} else {
-					statusLabel = new Label("Status: Ongoing / Open");
-					statusLabel.setStyle("-fx-text-fill: #A52A2A;");
+					statusLabel.setText("Status: Ongoing / Open");
+					statusLabel.setStyle("-fx-text-fill: rgb(94, 15, 8);");
 				}
 				card.getChildren().addAll(header, descLabel, statusLabel);
 				tournamentContainer.getChildren().add(card);
@@ -58,9 +62,10 @@ public class TournamentsWindow {
 	@FXML
 	private void openMain() {
 		try {
-			FXMLLoader loader = new FXMLLoader(getClass().getResource("ui/mainWindow.fxml"));
-			loader.setController(new MainWindow());
-			Parent root = loader.load();
+			FXMLLoader mainWindowLoader =
+				new FXMLLoader(getClass().getResource("ui/mainWindow.fxml"));
+			mainWindowLoader.setController(new MainWindow());
+			Parent root = mainWindowLoader.load();
 			backButton.getScene().setRoot(root);
 		} catch (Exception exception) {
 			exception.printStackTrace();
