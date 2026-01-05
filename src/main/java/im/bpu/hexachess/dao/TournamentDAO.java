@@ -70,12 +70,12 @@ public class TournamentDAO extends DAO<Tournament> {
 			exception.printStackTrace();
 		}
 	}
-	public Tournament read(String id) {
+	public Tournament read(String tournamentId) {
 		Tournament tournament = null;
 		String request = "SELECT * FROM tournaments WHERE tournament_id = ?";
 		try {
 			PreparedStatement pstmt = connect.prepareStatement(request);
-			pstmt.setString(1, id);
+			pstmt.setString(1, tournamentId);
 			ResultSet rs = pstmt.executeQuery();
 			if (rs.next()) {
 				tournament = new Tournament(rs.getString("tournament_id"), rs.getString("name"),
@@ -95,12 +95,12 @@ public class TournamentDAO extends DAO<Tournament> {
 		return tournament;
 	}
 	public ArrayList<Tournament> readAll() {
-		java.util.ArrayList<Tournament> list = new java.util.ArrayList<>();
+		ArrayList<Tournament> tournaments = new ArrayList<>();
 		String request = "SELECT * FROM tournaments";
 		try {
 			ResultSet rs = stmt.executeQuery(request);
 			while (rs.next()) {
-				list.add(new Tournament(rs.getString("tournament_id"), rs.getString("name"),
+				tournaments.add(new Tournament(rs.getString("tournament_id"), rs.getString("name"),
 					rs.getString("description"),
 					rs.getTimestamp("start_time") != null
 						? rs.getTimestamp("start_time").toLocalDateTime()
@@ -114,6 +114,6 @@ public class TournamentDAO extends DAO<Tournament> {
 		} catch (SQLException exception) {
 			exception.printStackTrace();
 		}
-		return list;
+		return tournaments;
 	}
 }

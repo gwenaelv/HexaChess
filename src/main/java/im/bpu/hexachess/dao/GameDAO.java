@@ -67,12 +67,12 @@ public class GameDAO extends DAO<Game> {
 			exception.printStackTrace();
 		}
 	}
-	public Game read(String id) {
+	public Game read(String gameId) {
 		Game game = null;
 		String request = "SELECT * FROM games WHERE game_id = ?";
 		try {
 			PreparedStatement pstmt = connect.prepareStatement(request);
-			pstmt.setString(1, id);
+			pstmt.setString(1, gameId);
 			ResultSet rs = pstmt.executeQuery();
 			if (rs.next()) {
 				game = new Game(rs.getString("game_id"), rs.getString("white_player_id"),
