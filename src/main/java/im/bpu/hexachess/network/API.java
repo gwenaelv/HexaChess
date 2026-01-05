@@ -103,6 +103,42 @@ public class API {
 		}
 		return null;
 	}
+	public static List<Achievement> achievements() {
+		try {
+			HttpRequest.Builder requestBuilder =
+				HttpRequest.newBuilder().GET().timeout(Duration.ofSeconds(6));
+			HttpResponse<String> response = sendWithFallback(requestBuilder, "/achievements");
+			if (response.statusCode() == 200)
+				return List.of(mapper.readValue(response.body(), Achievement[].class));
+		} catch (Exception exception) {
+			exception.printStackTrace();
+		}
+		return Collections.emptyList();
+	}
+	public static List<Puzzle> puzzles() {
+		try {
+			HttpRequest.Builder requestBuilder =
+				HttpRequest.newBuilder().GET().timeout(Duration.ofSeconds(6));
+			HttpResponse<String> response = sendWithFallback(requestBuilder, "/puzzles");
+			if (response.statusCode() == 200)
+				return List.of(mapper.readValue(response.body(), Puzzle[].class));
+		} catch (Exception exception) {
+			exception.printStackTrace();
+		}
+		return Collections.emptyList();
+	}
+	public static List<Tournament> tournaments() {
+		try {
+			HttpRequest.Builder requestBuilder =
+				HttpRequest.newBuilder().GET().timeout(Duration.ofSeconds(6));
+			HttpResponse<String> response = sendWithFallback(requestBuilder, "/tournaments");
+			if (response.statusCode() == 200)
+				return List.of(mapper.readValue(response.body(), Tournament[].class));
+		} catch (Exception exception) {
+			exception.printStackTrace();
+		}
+		return Collections.emptyList();
+	}
 	public static String challenge(String from, String to) {
 		try {
 			ObjectNode jsonNode = mapper.createObjectNode();
@@ -145,41 +181,5 @@ public class API {
 		} catch (Exception ignored) { // high-frequency polling operation
 			return null;
 		}
-	}
-	public static List<Achievement> getAchievements() {
-		try {
-			HttpRequest.Builder requestBuilder =
-				HttpRequest.newBuilder().GET().timeout(Duration.ofSeconds(6));
-			HttpResponse<String> response = sendWithFallback(requestBuilder, "/achievements");
-			if (response.statusCode() == 200)
-				return List.of(mapper.readValue(response.body(), Achievement[].class));
-		} catch (Exception exception) {
-			exception.printStackTrace();
-		}
-		return Collections.emptyList();
-	}
-	public static List<Puzzle> getPuzzles() {
-		try {
-			HttpRequest.Builder requestBuilder =
-				HttpRequest.newBuilder().GET().timeout(Duration.ofSeconds(6));
-			HttpResponse<String> response = sendWithFallback(requestBuilder, "/puzzles");
-			if (response.statusCode() == 200)
-				return List.of(mapper.readValue(response.body(), Puzzle[].class));
-		} catch (Exception exception) {
-			exception.printStackTrace();
-		}
-		return Collections.emptyList();
-	}
-	public static List<Tournament> getTournaments() {
-		try {
-			HttpRequest.Builder requestBuilder =
-				HttpRequest.newBuilder().GET().timeout(Duration.ofSeconds(6));
-			HttpResponse<String> response = sendWithFallback(requestBuilder, "/tournaments");
-			if (response.statusCode() == 200)
-				return List.of(mapper.readValue(response.body(), Tournament[].class));
-		} catch (Exception exception) {
-			exception.printStackTrace();
-		}
-		return Collections.emptyList();
 	}
 }

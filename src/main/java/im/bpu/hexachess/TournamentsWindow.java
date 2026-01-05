@@ -20,7 +20,7 @@ public class TournamentsWindow {
 	@FXML private Button backButton;
 	@FXML
 	private void initialize() {
-		List<Tournament> tournaments = API.getTournaments();
+		List<Tournament> tournaments = API.tournaments();
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd MMM yyyy HH:mm");
 		if (tournaments.isEmpty()) {
 			Label emptyLabel = new Label("No tournaments found.");
