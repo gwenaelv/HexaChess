@@ -67,6 +67,17 @@ public class GameDAO extends DAO<Game> {
 			exception.printStackTrace();
 		}
 	}
+	private Game resultSetToGame(ResultSet rs) throws SQLException {
+		Game game = new Game(rs.getString("game_id"), rs.getString("white_player_id"),
+			rs.getString("black_player_id"), rs.getString("winner_id"),
+			rs.getString("tournament_id"), rs.getString("moves"),
+			rs.getTimestamp("start_time") != null ? rs.getTimestamp("start_time").toLocalDateTime()
+												  : null,
+			rs.getTimestamp("end_time") != null ? rs.getTimestamp("end_time").toLocalDateTime()
+												: null,
+			rs.getString("victory_type"));
+		return game;
+	}
 	public Game read(String gameId) {
 		Game game = null;
 		String request = "SELECT * FROM games WHERE game_id = ?";
@@ -75,16 +86,7 @@ public class GameDAO extends DAO<Game> {
 			pstmt.setString(1, gameId);
 			ResultSet rs = pstmt.executeQuery();
 			if (rs.next()) {
-				game = new Game(rs.getString("game_id"), rs.getString("white_player_id"),
-					rs.getString("black_player_id"), rs.getString("winner_id"),
-					rs.getString("tournament_id"), rs.getString("moves"),
-					rs.getTimestamp("start_time") != null
-						? rs.getTimestamp("start_time").toLocalDateTime()
-						: null,
-					rs.getTimestamp("end_time") != null
-						? rs.getTimestamp("end_time").toLocalDateTime()
-						: null,
-					rs.getString("victory_type"));
+				game = resultSetToGame(rs);
 			}
 			rs.close();
 		} catch (SQLException exception) {

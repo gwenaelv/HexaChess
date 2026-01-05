@@ -59,6 +59,13 @@ public class PuzzleDAO extends DAO<Puzzle> {
 			exception.printStackTrace();
 		}
 	}
+	private Puzzle resultSetToPuzzle(ResultSet rs) throws SQLException {
+		Puzzle puzzle = new Puzzle(rs.getString("puzzle_id"), rs.getString("moves"),
+			rs.getString("solutions"), rs.getInt("rating"), rs.getString("theme"),
+			rs.getTimestamp("created_at") != null ? rs.getTimestamp("created_at").toLocalDateTime()
+												  : null);
+		return puzzle;
+	}
 	public Puzzle read(String puzzleId) {
 		Puzzle puzzle = null;
 		String request = "SELECT * FROM puzzles WHERE puzzle_id = ?";
@@ -67,11 +74,7 @@ public class PuzzleDAO extends DAO<Puzzle> {
 			pstmt.setString(1, puzzleId);
 			ResultSet rs = pstmt.executeQuery();
 			if (rs.next()) {
-				puzzle = new Puzzle(rs.getString("puzzle_id"), rs.getString("moves"),
-					rs.getString("solutions"), rs.getInt("rating"), rs.getString("theme"),
-					rs.getTimestamp("created_at") != null
-						? rs.getTimestamp("created_at").toLocalDateTime()
-						: null);
+				puzzle = resultSetToPuzzle(rs);
 			}
 			rs.close();
 		} catch (SQLException exception) {
@@ -85,11 +88,7 @@ public class PuzzleDAO extends DAO<Puzzle> {
 		try {
 			ResultSet rs = stmt.executeQuery(request);
 			while (rs.next()) {
-				puzzles.add(new Puzzle(rs.getString("puzzle_id"), rs.getString("moves"),
-					rs.getString("solutions"), rs.getInt("rating"), rs.getString("theme"),
-					rs.getTimestamp("created_at") != null
-						? rs.getTimestamp("created_at").toLocalDateTime()
-						: null));
+				puzzles.add(resultSetToPuzzle(rs));
 			}
 			rs.close();
 		} catch (SQLException exception) {

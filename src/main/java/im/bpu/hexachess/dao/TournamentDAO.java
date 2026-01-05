@@ -70,6 +70,16 @@ public class TournamentDAO extends DAO<Tournament> {
 			exception.printStackTrace();
 		}
 	}
+	private Tournament resultSetToTournament(ResultSet rs) throws SQLException {
+		Tournament tournament = new Tournament(rs.getString("tournament_id"), rs.getString("name"),
+			rs.getString("description"),
+			rs.getTimestamp("start_time") != null ? rs.getTimestamp("start_time").toLocalDateTime()
+												  : null,
+			rs.getTimestamp("end_time") != null ? rs.getTimestamp("end_time").toLocalDateTime()
+												: null,
+			rs.getString("winner_id"));
+		return tournament;
+	}
 	public Tournament read(String tournamentId) {
 		Tournament tournament = null;
 		String request = "SELECT * FROM tournaments WHERE tournament_id = ?";
@@ -78,15 +88,7 @@ public class TournamentDAO extends DAO<Tournament> {
 			pstmt.setString(1, tournamentId);
 			ResultSet rs = pstmt.executeQuery();
 			if (rs.next()) {
-				tournament = new Tournament(rs.getString("tournament_id"), rs.getString("name"),
-					rs.getString("description"),
-					rs.getTimestamp("start_time") != null
-						? rs.getTimestamp("start_time").toLocalDateTime()
-						: null,
-					rs.getTimestamp("end_time") != null
-						? rs.getTimestamp("end_time").toLocalDateTime()
-						: null,
-					rs.getString("winner_id"));
+				tournament = resultSetToTournament(rs);
 			}
 			rs.close();
 		} catch (SQLException exception) {
@@ -100,15 +102,7 @@ public class TournamentDAO extends DAO<Tournament> {
 		try {
 			ResultSet rs = stmt.executeQuery(request);
 			while (rs.next()) {
-				tournaments.add(new Tournament(rs.getString("tournament_id"), rs.getString("name"),
-					rs.getString("description"),
-					rs.getTimestamp("start_time") != null
-						? rs.getTimestamp("start_time").toLocalDateTime()
-						: null,
-					rs.getTimestamp("end_time") != null
-						? rs.getTimestamp("end_time").toLocalDateTime()
-						: null,
-					rs.getString("winner_id")));
+				tournaments.add(resultSetToTournament(rs));
 			}
 			rs.close();
 		} catch (SQLException exception) {

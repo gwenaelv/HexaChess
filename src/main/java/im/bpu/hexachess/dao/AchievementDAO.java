@@ -49,6 +49,11 @@ public class AchievementDAO extends DAO<Achievement> {
 			exception.printStackTrace();
 		}
 	}
+	private Achievement resultSetToAchievement(ResultSet rs) throws SQLException {
+		Achievement achievement = new Achievement(
+			rs.getString("achievement_id"), rs.getString("name"), rs.getString("description"));
+		return achievement;
+	}
 	public Achievement read(String achievementId) {
 		Achievement achievement = null;
 		String request = "SELECT * FROM achievements WHERE achievement_id = ?";
@@ -57,8 +62,7 @@ public class AchievementDAO extends DAO<Achievement> {
 			pstmt.setString(1, achievementId);
 			ResultSet rs = pstmt.executeQuery();
 			if (rs.next()) {
-				achievement = new Achievement(rs.getString("achievement_id"), rs.getString("name"),
-					rs.getString("description"));
+				achievement = resultSetToAchievement(rs);
 			}
 			rs.close();
 		} catch (SQLException exception) {
@@ -72,8 +76,7 @@ public class AchievementDAO extends DAO<Achievement> {
 		try {
 			ResultSet rs = stmt.executeQuery(request);
 			while (rs.next()) {
-				achievements.add(new Achievement(rs.getString("achievement_id"),
-					rs.getString("name"), rs.getString("description")));
+				achievements.add(resultSetToAchievement(rs));
 			}
 			rs.close();
 		} catch (SQLException exception) {
