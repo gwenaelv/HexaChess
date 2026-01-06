@@ -10,19 +10,33 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
+import javafx.stage.Screen;
+
+import static im.bpu.hexachess.Main.getAspectRatio;
 
 public class SearchWindow {
 	private static final String BASE_URL =
 		"https://www.chess.com/bundles/web/images/noavatar_l.gif";
 	@FXML private TextField searchField;
+	@FXML private ScrollPane searchPane;
 	@FXML private VBox playerContainer;
 	@FXML private Button backButton;
+	@FXML
+	private void initialize() {
+		if (getAspectRatio() < 1.5) {
+			searchPane.setStyle(
+				"-fx-pref-width: 400px; -fx-max-width: 400px;"); // CSS instead of JavaFX's
+																 // setPrefWidth/setMaxWidth due to
+																 // parsing precedence
+		}
+	}
 	@FXML
 	private void handleSearch() {
 		playerContainer.getChildren().clear();

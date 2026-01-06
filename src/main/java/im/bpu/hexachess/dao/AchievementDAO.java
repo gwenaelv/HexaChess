@@ -49,16 +49,20 @@ public class AchievementDAO extends DAO<Achievement> {
 			exception.printStackTrace();
 		}
 	}
-	public Achievement read(String id) {
+	private Achievement resultSetToAchievement(ResultSet rs) throws SQLException {
+		Achievement achievement = new Achievement(
+			rs.getString("achievement_id"), rs.getString("name"), rs.getString("description"));
+		return achievement;
+	}
+	public Achievement read(String achievementId) {
 		Achievement achievement = null;
 		String request = "SELECT * FROM achievements WHERE achievement_id = ?";
 		try {
 			PreparedStatement pstmt = connect.prepareStatement(request);
-			pstmt.setString(1, id);
+			pstmt.setString(1, achievementId);
 			ResultSet rs = pstmt.executeQuery();
 			if (rs.next()) {
-				achievement = new Achievement(rs.getString("achievement_id"), rs.getString("name"),
-					rs.getString("description"));
+				achievement = resultSetToAchievement(rs);
 			}
 			rs.close();
 		} catch (SQLException exception) {
@@ -67,18 +71,17 @@ public class AchievementDAO extends DAO<Achievement> {
 		return achievement;
 	}
 	public ArrayList<Achievement> readAll() {
-		ArrayList<Achievement> list = new ArrayList<>();
+		ArrayList<Achievement> achievements = new ArrayList<>();
 		String request = "SELECT * FROM achievements";
 		try {
 			ResultSet rs = stmt.executeQuery(request);
 			while (rs.next()) {
-				list.add(new Achievement(rs.getString("achievement_id"), rs.getString("name"),
-					rs.getString("description")));
+				achievements.add(resultSetToAchievement(rs));
 			}
 			rs.close();
 		} catch (SQLException exception) {
 			exception.printStackTrace();
 		}
-		return list;
+		return achievements;
 	}
 }

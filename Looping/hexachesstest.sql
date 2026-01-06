@@ -1,0 +1,53 @@
+INSERT INTO
+	players (
+		player_id,
+		handle,
+		email,
+		password_hash,
+		display_name,
+		avatar,
+		birthday,
+		sex,
+		rating,
+		location,
+		joined_at,
+		updated_at,
+		last_login,
+		is_verified,
+		is_banned
+	)
+VALUES
+	(
+		'00000000001',
+		'test',
+		'test@example.org',
+		'$2a$10$9qJDPUYa95RtX/BliLF9Nepu6eB99pqa66YV5RuBx9rOcL3A5BpHq',
+		NULL,
+		NULL,
+		NULL,
+		NULL,
+		'1200',
+		NULL,
+		'2026-01-01 00:00:00',
+		NULL,
+		NULL,
+		'0',
+		'0'
+	),
+	(
+		'00000000002',
+		'test2',
+		'test2@example.org',
+		'$2a$10$9qJDPUYa95RtX/BliLF9Nepu6eB99pqa66YV5RuBx9rOcL3A5BpHq',
+		NULL,
+		NULL,
+		NULL,
+		NULL,
+		'1200',
+		NULL,
+		'2026-01-01 00:00:00',
+		NULL,
+		NULL,
+		'0',
+		'0'
+	);

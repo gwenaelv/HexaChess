@@ -53,6 +53,12 @@ public class SettingsDAO extends DAO<Settings> {
 			exception.printStackTrace();
 		}
 	}
+	private Settings resultSetToSettings(ResultSet rs) throws SQLException {
+		Settings settings = new Settings(rs.getString("player_id"), rs.getString("theme"),
+			rs.getBoolean("show_legal_moves"), rs.getBoolean("auto_promote_queen"),
+			rs.getInt("ai_difficulty_level"));
+		return settings;
+	}
 	public Settings read(String playerId) {
 		Settings settings = null;
 		String request = "SELECT * FROM settings WHERE player_id = ?";
@@ -61,9 +67,7 @@ public class SettingsDAO extends DAO<Settings> {
 			pstmt.setString(1, playerId);
 			ResultSet rs = pstmt.executeQuery();
 			if (rs.next()) {
-				settings = new Settings(rs.getString("player_id"), rs.getString("theme"),
-					rs.getBoolean("show_legal_moves"), rs.getBoolean("auto_promote_queen"),
-					rs.getInt("ai_difficulty_level"));
+				settings = resultSetToSettings(rs);
 			}
 			rs.close();
 		} catch (SQLException exception) {

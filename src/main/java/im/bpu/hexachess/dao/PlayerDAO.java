@@ -75,12 +75,12 @@ public class PlayerDAO extends DAO<Player> {
 		player.setLocation(rs.getString("location"));
 		return player;
 	}
-	public Player read(String id) {
+	public Player read(String playerId) {
 		Player player = null;
 		String request = "SELECT * FROM players WHERE player_id = ?";
 		try {
 			PreparedStatement pstmt = connect.prepareStatement(request);
-			pstmt.setString(1, id);
+			pstmt.setString(1, playerId);
 			ResultSet rs = pstmt.executeQuery();
 			if (rs.next()) {
 				player = resultSetToPlayer(rs);

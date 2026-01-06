@@ -1,7 +1,10 @@
 package im.bpu.hexachess.network;
 
 import im.bpu.hexachess.Config;
+import im.bpu.hexachess.entity.Achievement;
 import im.bpu.hexachess.entity.Player;
+import im.bpu.hexachess.entity.Puzzle;
+import im.bpu.hexachess.entity.Tournament;
 
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -99,6 +102,42 @@ public class API {
 			exception.printStackTrace();
 		}
 		return null;
+	}
+	public static List<Achievement> achievements() {
+		try {
+			HttpRequest.Builder requestBuilder =
+				HttpRequest.newBuilder().GET().timeout(Duration.ofSeconds(6));
+			HttpResponse<String> response = sendWithFallback(requestBuilder, "/achievements");
+			if (response.statusCode() == 200)
+				return List.of(mapper.readValue(response.body(), Achievement[].class));
+		} catch (Exception exception) {
+			exception.printStackTrace();
+		}
+		return Collections.emptyList();
+	}
+	public static List<Puzzle> puzzles() {
+		try {
+			HttpRequest.Builder requestBuilder =
+				HttpRequest.newBuilder().GET().timeout(Duration.ofSeconds(6));
+			HttpResponse<String> response = sendWithFallback(requestBuilder, "/puzzles");
+			if (response.statusCode() == 200)
+				return List.of(mapper.readValue(response.body(), Puzzle[].class));
+		} catch (Exception exception) {
+			exception.printStackTrace();
+		}
+		return Collections.emptyList();
+	}
+	public static List<Tournament> tournaments() {
+		try {
+			HttpRequest.Builder requestBuilder =
+				HttpRequest.newBuilder().GET().timeout(Duration.ofSeconds(6));
+			HttpResponse<String> response = sendWithFallback(requestBuilder, "/tournaments");
+			if (response.statusCode() == 200)
+				return List.of(mapper.readValue(response.body(), Tournament[].class));
+		} catch (Exception exception) {
+			exception.printStackTrace();
+		}
+		return Collections.emptyList();
 	}
 	public static String challenge(String from, String to) {
 		try {
