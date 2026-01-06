@@ -30,7 +30,10 @@ public class TournamentsWindow {
 	@FXML
 	private void initialize() {
 		if (getAspectRatio() < 1.5) {
-			tournamentsPane.setStyle("-fx-pref-width: 400px; -fx-max-width: 400px;");
+			tournamentsPane.setStyle(
+				"-fx-pref-width: 400px; -fx-max-width: 400px;"); // CSS instead of JavaFX's
+																 // setPrefWidth/setMaxWidth due to
+																 // parsing precedence
 		}
 		List<Tournament> tournaments = API.tournaments();
 		if (tournaments.isEmpty()) {
