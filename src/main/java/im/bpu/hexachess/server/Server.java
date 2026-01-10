@@ -96,7 +96,7 @@ public class Server {
 			}
 			try {
 				ObjectNode jsonNode = mapper.readValue(exchange.getRequestBody(), ObjectNode.class);
-				if (!jsonNode.has("handle") || !jsonNode.has("password")) {
+				if (jsonNode == null || !jsonNode.has("handle") || !jsonNode.has("password")) {
 					sendResponse(exchange, 400, "Bad Request");
 					return;
 				}
@@ -132,6 +132,10 @@ public class Server {
 			}
 			try {
 				Player player = mapper.readValue(exchange.getRequestBody(), Player.class);
+				if (player == null) {
+					sendResponse(exchange, 400, "Bad Request");
+					return;
+				}
 				String handle = player.getHandle();
 				String email = player.getEmail();
 				String password = player.getPasswordHash();
@@ -172,6 +176,10 @@ public class Server {
 			if ("GET".equalsIgnoreCase(exchange.getRequestMethod())) {
 				try {
 					String query = exchange.getRequestURI().getQuery();
+					if (query == null || !query.contains("playerId=")) {
+						sendResponse(exchange, 400, "Bad Request");
+						return;
+					}
 					String playerId = query.split("=")[1];
 					PlayerDAO pDao = new PlayerDAO();
 					Player player = pDao.read(playerId);
@@ -196,6 +204,10 @@ public class Server {
 			} else if ("POST".equalsIgnoreCase(exchange.getRequestMethod())) {
 				try {
 					Settings settings = mapper.readValue(exchange.getRequestBody(), Settings.class);
+					if (settings == null) {
+						sendResponse(exchange, 400, "Bad Request");
+						return;
+					}
 					String playerId = settings.getPlayerId();
 					PlayerDAO pDao = new PlayerDAO();
 					Player player = pDao.read(playerId);
@@ -248,6 +260,10 @@ public class Server {
 			}
 			try {
 				String query = exchange.getRequestURI().getQuery();
+				if (query == null || !query.contains("handle=")) {
+					sendResponse(exchange, 400, "Bad Request");
+					return;
+				}
 				String handle = query.split("=")[1];
 				PlayerDAO dao = new PlayerDAO();
 				Player player = dao.getPlayerByHandle(handle);
@@ -335,6 +351,10 @@ public class Server {
 				return;
 			}
 			ObjectNode jsonNode = mapper.readValue(exchange.getRequestBody(), ObjectNode.class);
+			if (jsonNode == null || !jsonNode.has("to")) {
+				sendResponse(exchange, 400, "Bad Request");
+				return;
+			}
 			String from = handle;
 			String to = jsonNode.get("to").asText();
 			challenges.put(from, to);
@@ -363,6 +383,10 @@ public class Server {
 			}
 			if ("POST".equalsIgnoreCase(exchange.getRequestMethod())) {
 				ObjectNode jsonNode = mapper.readValue(exchange.getRequestBody(), ObjectNode.class);
+				if (jsonNode == null || !jsonNode.has("gameId") || !jsonNode.has("move")) {
+					sendResponse(exchange, 400, "Bad Request");
+					return;
+				}
 				String gameId = jsonNode.get("gameId").asText();
 				if (!isUserInGame(handle, gameId)) {
 					sendResponse(exchange, 403, "Forbidden");
@@ -373,6 +397,10 @@ public class Server {
 				sendResponse(exchange, 200, "OK");
 			} else {
 				String query = exchange.getRequestURI().getQuery();
+				if (query == null || !query.contains("gameId=")) {
+					sendResponse(exchange, 400, "Bad Request");
+					return;
+				}
 				String gameId = query.split("=")[1];
 				if (!isUserInGame(handle, gameId)) {
 					sendResponse(exchange, 403, "Forbidden");
