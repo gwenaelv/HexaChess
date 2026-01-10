@@ -25,6 +25,7 @@ import java.util.Base64;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 import javax.crypto.SecretKey;
 
@@ -78,6 +79,14 @@ public class Server {
 			return null;
 		}
 	}
+	private static boolean isUserInGame(String handle, String gameId) {
+		for (Entry<String, String> game : games.entrySet()) {
+			if (game.getValue().equals(gameId) && game.getKey().contains(handle)) {
+				return true;
+			}
+		}
+		return false;
+	}
 	static class LoginHandler implements HttpHandler {
 		@Override
 		public void handle(HttpExchange exchange) throws IOException {
@@ -87,6 +96,10 @@ public class Server {
 			}
 			try {
 				ObjectNode jsonNode = mapper.readValue(exchange.getRequestBody(), ObjectNode.class);
+				if (!jsonNode.has("handle") || !jsonNode.has("password")) {
+					sendResponse(exchange, 400, "Bad Request");
+					return;
+				}
 				String handle = jsonNode.get("handle").asText();
 				String password = jsonNode.get("password").asText();
 				PlayerDAO dao = new PlayerDAO();
@@ -120,13 +133,20 @@ public class Server {
 			try {
 				Player player = mapper.readValue(exchange.getRequestBody(), Player.class);
 				String handle = player.getHandle();
+				String email = player.getEmail();
+				String password = player.getPasswordHash();
+				if (handle == null || handle.isEmpty() || handle.length() > 32 || email == null
+					|| !email.contains("@") || !email.contains(".") || password == null
+					|| password.length() < 8) {
+					sendResponse(exchange, 400, "Bad Request");
+					return;
+				}
 				PlayerDAO dao = new PlayerDAO();
 				if (dao.getPlayerByHandle(handle) != null) {
 					dao.close();
 					sendResponse(exchange, 409, "Conflict: Username taken");
 					return;
 				}
-				String password = player.getPasswordHash();
 				String passwordHash = BCrypt.hashpw(password, BCrypt.gensalt());
 				player.setPasswordHash(passwordHash);
 				player.setRating(1200);
@@ -144,7 +164,8 @@ public class Server {
 	static class SettingsHandler implements HttpHandler {
 		@Override
 		public void handle(HttpExchange exchange) throws IOException {
-			if (auth(exchange) == null) {
+			String handle = auth(exchange);
+			if (handle == null) {
 				sendResponse(exchange, 401, "Unauthorized");
 				return;
 			}
@@ -152,6 +173,13 @@ public class Server {
 				try {
 					String query = exchange.getRequestURI().getQuery();
 					String playerId = query.split("=")[1];
+					PlayerDAO pDao = new PlayerDAO();
+					Player player = pDao.read(playerId);
+					pDao.close();
+					if (player == null || !player.getHandle().equals(handle)) {
+						sendResponse(exchange, 403, "Forbidden");
+						return;
+					}
 					SettingsDAO dao = new SettingsDAO();
 					Settings settings = dao.read(playerId);
 					if (settings == null) {
@@ -168,6 +196,14 @@ public class Server {
 			} else if ("POST".equalsIgnoreCase(exchange.getRequestMethod())) {
 				try {
 					Settings settings = mapper.readValue(exchange.getRequestBody(), Settings.class);
+					String playerId = settings.getPlayerId();
+					PlayerDAO pDao = new PlayerDAO();
+					Player player = pDao.read(playerId);
+					pDao.close();
+					if (player == null || !player.getHandle().equals(handle)) {
+						sendResponse(exchange, 403, "Forbidden");
+						return;
+					}
 					SettingsDAO dao = new SettingsDAO();
 					dao.update(settings);
 					dao.close();
@@ -289,7 +325,8 @@ public class Server {
 	static class ChallengeHandler implements HttpHandler {
 		@Override
 		public void handle(HttpExchange exchange) throws IOException {
-			if (auth(exchange) == null) {
+			String handle = auth(exchange);
+			if (handle == null) {
 				sendResponse(exchange, 401, "Unauthorized");
 				return;
 			}
@@ -298,7 +335,7 @@ public class Server {
 				return;
 			}
 			ObjectNode jsonNode = mapper.readValue(exchange.getRequestBody(), ObjectNode.class);
-			String from = jsonNode.get("from").asText();
+			String from = handle;
 			String to = jsonNode.get("to").asText();
 			challenges.put(from, to);
 			if (from.equals(challenges.get(to))) {
@@ -319,19 +356,28 @@ public class Server {
 	static class SyncHandler implements HttpHandler {
 		@Override
 		public void handle(HttpExchange exchange) throws IOException {
-			if (auth(exchange) == null) {
+			String handle = auth(exchange);
+			if (handle == null) {
 				sendResponse(exchange, 401, "Unauthorized");
 				return;
 			}
 			if ("POST".equalsIgnoreCase(exchange.getRequestMethod())) {
 				ObjectNode jsonNode = mapper.readValue(exchange.getRequestBody(), ObjectNode.class);
 				String gameId = jsonNode.get("gameId").asText();
+				if (!isUserInGame(handle, gameId)) {
+					sendResponse(exchange, 403, "Forbidden");
+					return;
+				}
 				String move = jsonNode.get("move").asText();
 				moves.put(gameId, move);
 				sendResponse(exchange, 200, "OK");
 			} else {
 				String query = exchange.getRequestURI().getQuery();
 				String gameId = query.split("=")[1];
+				if (!isUserInGame(handle, gameId)) {
+					sendResponse(exchange, 403, "Forbidden");
+					return;
+				}
 				String move = moves.getOrDefault(gameId, "");
 				sendResponse(exchange, 200, move);
 			}
