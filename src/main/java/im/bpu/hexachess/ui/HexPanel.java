@@ -19,13 +19,13 @@ import javafx.scene.canvas.GraphicsContext;
 import static im.bpu.hexachess.Main.getAspectRatio;
 
 public class HexPanel {
-	private State state;
-	private AI ai = new AI();
-	private HexGeometry geometry;
-	private HexRenderer renderer;
+	private final State state;
+	private final AI ai = new AI();
+	private final HexGeometry geometry;
+	private final HexRenderer renderer;
 	private AxialCoordinate selected;
-	private List<AxialCoordinate> highlighted = new ArrayList<>();
-	private Canvas canvas;
+	private final List<AxialCoordinate> highlighted = new ArrayList<>();
+	private final Canvas canvas;
 	private boolean isLockedIn = false;
 	private String lastSyncedMoveString = "";
 	public HexPanel(Canvas canvas, State state) {
