@@ -32,9 +32,11 @@ public class SettingsWindow {
 				default -> 3;
 			};
 			SettingsManager.setMaxDepth(depth);
-			Settings settings = new Settings(
-				SettingsManager.playerId, "default", true, false, SettingsManager.maxDepth);
-			API.settings(settings);
+			Thread.ofVirtual().start(() -> {
+				Settings settings = new Settings(
+					SettingsManager.playerId, "default", true, false, SettingsManager.maxDepth);
+				API.settings(settings);
+			});
 		}
 		try {
 			FXMLLoader mainWindowLoader =

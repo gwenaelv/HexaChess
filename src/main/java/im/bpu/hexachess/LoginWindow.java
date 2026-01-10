@@ -4,6 +4,7 @@ import im.bpu.hexachess.entity.Player;
 import im.bpu.hexachess.entity.Settings;
 import im.bpu.hexachess.network.API;
 
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -27,27 +28,32 @@ public class LoginWindow {
 		}
 		String handle = handleField.getText();
 		String password = passwordField.getText();
-		Player player = null;
-		if ("root".equals(handle) && "password123".equals(password)) {
-			player = new Player("00000000000", "root", "root@localhost", "", 1200, true, null);
-		} else {
-			player = API.login(handle, password);
-			System.out.println("Connected as: " + (player != null ? player.getHandle() : "null"));
-		}
-		if (player != null) {
-			String playerId = player.getPlayerId();
-			SettingsManager.setPlayerId(playerId);
-			SettingsManager.setUserHandle(handle);
-			SettingsManager.setAuthToken(player.getToken());
-			Settings settings = API.settings(playerId);
-			if (settings != null) {
-				SettingsManager.setMaxDepth(settings.getAiDifficultyLevel());
+		Thread.ofVirtual().start(() -> {
+			Player player;
+			if ("root".equals(handle) && "password123".equals(password)) {
+				player = new Player("00000000000", "root", "root@localhost", "", 1200, true, null);
+			} else {
+				player = API.login(handle, password);
+				System.out.println(
+					"Connected as: " + (player != null ? player.getHandle() : "null"));
 			}
-			openMain();
-		} else {
-			errorLabel.setText("Invalid username or password");
-			errorLabel.setVisible(true);
-		}
+			if (player != null) {
+				String playerId = player.getPlayerId();
+				SettingsManager.setPlayerId(playerId);
+				SettingsManager.setUserHandle(handle);
+				SettingsManager.setAuthToken(player.getToken());
+				Settings settings = API.settings(playerId);
+				if (settings != null) {
+					SettingsManager.setMaxDepth(settings.getAiDifficultyLevel());
+				}
+				Platform.runLater(this::openMain);
+			} else {
+				Platform.runLater(() -> {
+					errorLabel.setText("Invalid username or password");
+					errorLabel.setVisible(true);
+				});
+			}
+		});
 	}
 	private void openMain() {
 		try {

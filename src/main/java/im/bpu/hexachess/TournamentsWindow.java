@@ -5,6 +5,7 @@ import im.bpu.hexachess.network.API;
 
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -27,40 +28,45 @@ public class TournamentsWindow {
 																 // setPrefWidth/setMaxWidth due to
 																 // parsing precedence
 		}
-		List<Tournament> tournaments = API.tournaments();
-		if (tournaments.isEmpty()) {
-			Label emptyLabel = new Label("No tournaments found.");
-			tournamentContainer.getChildren().add(emptyLabel);
-		} else {
-			for (Tournament tournament : tournaments) {
-				try {
-					FXMLLoader tournamentItemLoader =
-						new FXMLLoader(getClass().getResource("ui/tournamentItem.fxml"));
-					VBox tournamentItem = tournamentItemLoader.load();
-					Label nameLabel = (Label) tournamentItem.lookup("#nameLabel");
-					Label dateLabel = (Label) tournamentItem.lookup("#dateLabel");
-					Label descriptionLabel = (Label) tournamentItem.lookup("#descriptionLabel");
-					Label statusLabel = (Label) tournamentItem.lookup("#statusLabel");
-					nameLabel.setText(tournament.getName());
-					String dateStr = (tournament.getStartTime() != null)
-						? tournament.getStartTime().format(
-							  DateTimeFormatter.ofPattern("MMM d yyyy HH:mm"))
-						: "TBD";
-					dateLabel.setText(dateStr);
-					descriptionLabel.setText(tournament.getDescription());
-					if (tournament.getWinnerId() != null) {
-						statusLabel.setText("Winner ID: " + tournament.getWinnerId());
-						statusLabel.getStyleClass().add("text-success");
-					} else {
-						statusLabel.setText("Status: Ongoing / Open");
-						statusLabel.getStyleClass().add("text-danger");
+		Thread.ofVirtual().start(() -> {
+			List<Tournament> tournaments = API.tournaments();
+			Platform.runLater(() -> {
+				if (tournaments.isEmpty()) {
+					Label emptyLabel = new Label("No tournaments found.");
+					tournamentContainer.getChildren().add(emptyLabel);
+				} else {
+					for (Tournament tournament : tournaments) {
+						try {
+							FXMLLoader tournamentItemLoader =
+								new FXMLLoader(getClass().getResource("ui/tournamentItem.fxml"));
+							VBox tournamentItem = tournamentItemLoader.load();
+							Label nameLabel = (Label) tournamentItem.lookup("#nameLabel");
+							Label dateLabel = (Label) tournamentItem.lookup("#dateLabel");
+							Label descriptionLabel =
+								(Label) tournamentItem.lookup("#descriptionLabel");
+							Label statusLabel = (Label) tournamentItem.lookup("#statusLabel");
+							nameLabel.setText(tournament.getName());
+							String dateStr = (tournament.getStartTime() != null)
+								? tournament.getStartTime().format(
+									  DateTimeFormatter.ofPattern("MMM d yyyy HH:mm"))
+								: "TBD";
+							dateLabel.setText(dateStr);
+							descriptionLabel.setText(tournament.getDescription());
+							if (tournament.getWinnerId() != null) {
+								statusLabel.setText("Winner ID: " + tournament.getWinnerId());
+								statusLabel.getStyleClass().add("text-success");
+							} else {
+								statusLabel.setText("Status: Ongoing / Open");
+								statusLabel.getStyleClass().add("text-danger");
+							}
+							tournamentContainer.getChildren().add(tournamentItem);
+						} catch (Exception exception) {
+							exception.printStackTrace();
+						}
 					}
-					tournamentContainer.getChildren().add(tournamentItem);
-				} catch (Exception exception) {
-					exception.printStackTrace();
 				}
-			}
-		}
+			});
+		});
 	}
 	@FXML
 	private void openMain() {

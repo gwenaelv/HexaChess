@@ -5,6 +5,7 @@ import im.bpu.hexachess.network.API;
 
 import java.security.SecureRandom;
 import java.util.Base64;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -49,20 +50,24 @@ public class RegisterWindow {
 			statusLabel.setVisible(true);
 			return;
 		}
-		byte[] bytes = new byte[9];
-		SecureRandom rand = new SecureRandom();
-		rand.nextBytes(bytes);
-		String playerId =
-			Base64.getUrlEncoder().withoutPadding().encodeToString(bytes).substring(0, 11);
-		Player player = new Player(playerId, handle, email, password, 1200, false, null);
-		boolean registerSuccess = API.register(player);
-		if (registerSuccess) {
-			SettingsManager.setUserHandle(handle);
-			openMain();
-		} else {
-			statusLabel.setText("Error (Username taken or server error)");
-			statusLabel.setVisible(true);
-		}
+		Thread.ofVirtual().start(() -> {
+			byte[] bytes = new byte[9];
+			SecureRandom rand = new SecureRandom();
+			rand.nextBytes(bytes);
+			String playerId =
+				Base64.getUrlEncoder().withoutPadding().encodeToString(bytes).substring(0, 11);
+			Player player = new Player(playerId, handle, email, password, 1200, false, null);
+			boolean registerSuccess = API.register(player);
+			Platform.runLater(() -> {
+				if (registerSuccess) {
+					SettingsManager.setUserHandle(handle);
+					openMain();
+				} else {
+					statusLabel.setText("Error (Username taken or server error)");
+					statusLabel.setVisible(true);
+				}
+			});
+		});
 	}
 	@FXML
 	private void openMain() {
