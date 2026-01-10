@@ -5,6 +5,7 @@ import im.bpu.hexachess.entity.Achievement;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 
 public class AchievementDAO extends DAO<Achievement> {
@@ -12,8 +13,7 @@ public class AchievementDAO extends DAO<Achievement> {
 	public Achievement create(Achievement achievement) {
 		String request =
 			"INSERT INTO achievements (achievement_id, name, description) VALUES(?, ?, ?)";
-		try {
-			PreparedStatement pstmt = connect.prepareStatement(request);
+		try (PreparedStatement pstmt = connect.prepareStatement(request)) {
 			pstmt.setString(1, achievement.getAchievementId());
 			pstmt.setString(2, achievement.getName());
 			pstmt.setString(3, achievement.getDescription());
@@ -27,8 +27,7 @@ public class AchievementDAO extends DAO<Achievement> {
 	public Achievement update(Achievement achievement) {
 		String request =
 			"UPDATE achievements SET name = ?, description = ? WHERE achievement_id = ?";
-		try {
-			PreparedStatement pstmt = connect.prepareStatement(request);
+		try (PreparedStatement pstmt = connect.prepareStatement(request)) {
 			pstmt.setString(1, achievement.getName());
 			pstmt.setString(2, achievement.getDescription());
 			pstmt.setString(3, achievement.getAchievementId());
@@ -41,8 +40,7 @@ public class AchievementDAO extends DAO<Achievement> {
 	@Override
 	public void delete(Achievement achievement) {
 		String request = "DELETE FROM achievements WHERE achievement_id = ?";
-		try {
-			PreparedStatement pstmt = connect.prepareStatement(request);
+		try (PreparedStatement pstmt = connect.prepareStatement(request)) {
 			pstmt.setString(1, achievement.getAchievementId());
 			pstmt.executeUpdate();
 		} catch (SQLException exception) {
@@ -57,14 +55,13 @@ public class AchievementDAO extends DAO<Achievement> {
 	public Achievement read(String achievementId) {
 		Achievement achievement = null;
 		String request = "SELECT * FROM achievements WHERE achievement_id = ?";
-		try {
-			PreparedStatement pstmt = connect.prepareStatement(request);
+		try (PreparedStatement pstmt = connect.prepareStatement(request)) {
 			pstmt.setString(1, achievementId);
-			ResultSet rs = pstmt.executeQuery();
-			if (rs.next()) {
-				achievement = resultSetToAchievement(rs);
+			try (ResultSet rs = pstmt.executeQuery()) {
+				if (rs.next()) {
+					achievement = resultSetToAchievement(rs);
+				}
 			}
-			rs.close();
 		} catch (SQLException exception) {
 			exception.printStackTrace();
 		}
@@ -73,12 +70,11 @@ public class AchievementDAO extends DAO<Achievement> {
 	public ArrayList<Achievement> readAll() {
 		ArrayList<Achievement> achievements = new ArrayList<>();
 		String request = "SELECT * FROM achievements";
-		try {
-			ResultSet rs = stmt.executeQuery(request);
+		try (Statement stmt = connect.createStatement();
+			ResultSet rs = stmt.executeQuery(request)) {
 			while (rs.next()) {
 				achievements.add(resultSetToAchievement(rs));
 			}
-			rs.close();
 		} catch (SQLException exception) {
 			exception.printStackTrace();
 		}

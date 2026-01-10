@@ -5,6 +5,7 @@ import im.bpu.hexachess.entity.Tournament;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 
@@ -13,8 +14,7 @@ public class TournamentDAO extends DAO<Tournament> {
 	public Tournament create(Tournament tournament) {
 		String request = "INSERT INTO tournaments (tournament_id, name, description, start_time, "
 			+ "end_time, winner_id) VALUES(?, ?, ?, ?, ?, ?)";
-		try {
-			PreparedStatement pstmt = connect.prepareStatement(request);
+		try (PreparedStatement pstmt = connect.prepareStatement(request)) {
 			pstmt.setString(1, tournament.getTournamentId());
 			pstmt.setString(2, tournament.getName());
 			pstmt.setString(3, tournament.getDescription());
@@ -39,8 +39,7 @@ public class TournamentDAO extends DAO<Tournament> {
 		String request =
 			"UPDATE tournaments SET name = ?, description = ?, start_time = ?, end_time = "
 			+ "?, winner_id = ? WHERE tournament_id = ?";
-		try {
-			PreparedStatement pstmt = connect.prepareStatement(request);
+		try (PreparedStatement pstmt = connect.prepareStatement(request)) {
 			pstmt.setString(1, tournament.getName());
 			pstmt.setString(2, tournament.getDescription());
 			if (tournament.getStartTime() != null)
@@ -62,8 +61,7 @@ public class TournamentDAO extends DAO<Tournament> {
 	@Override
 	public void delete(Tournament tournament) {
 		String request = "DELETE FROM tournaments WHERE tournament_id = ?";
-		try {
-			PreparedStatement pstmt = connect.prepareStatement(request);
+		try (PreparedStatement pstmt = connect.prepareStatement(request)) {
 			pstmt.setString(1, tournament.getTournamentId());
 			pstmt.executeUpdate();
 		} catch (SQLException exception) {
@@ -83,14 +81,13 @@ public class TournamentDAO extends DAO<Tournament> {
 	public Tournament read(String tournamentId) {
 		Tournament tournament = null;
 		String request = "SELECT * FROM tournaments WHERE tournament_id = ?";
-		try {
-			PreparedStatement pstmt = connect.prepareStatement(request);
+		try (PreparedStatement pstmt = connect.prepareStatement(request)) {
 			pstmt.setString(1, tournamentId);
-			ResultSet rs = pstmt.executeQuery();
-			if (rs.next()) {
-				tournament = resultSetToTournament(rs);
+			try (ResultSet rs = pstmt.executeQuery()) {
+				if (rs.next()) {
+					tournament = resultSetToTournament(rs);
+				}
 			}
-			rs.close();
 		} catch (SQLException exception) {
 			exception.printStackTrace();
 		}
@@ -99,12 +96,11 @@ public class TournamentDAO extends DAO<Tournament> {
 	public ArrayList<Tournament> readAll() {
 		ArrayList<Tournament> tournaments = new ArrayList<>();
 		String request = "SELECT * FROM tournaments";
-		try {
-			ResultSet rs = stmt.executeQuery(request);
+		try (Statement stmt = connect.createStatement();
+			ResultSet rs = stmt.executeQuery(request)) {
 			while (rs.next()) {
 				tournaments.add(resultSetToTournament(rs));
 			}
-			rs.close();
 		} catch (SQLException exception) {
 			exception.printStackTrace();
 		}

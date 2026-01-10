@@ -11,8 +11,7 @@ public class SettingsDAO extends DAO<Settings> {
 	public Settings create(Settings settings) {
 		String request = "INSERT INTO settings (player_id, theme, show_legal_moves, "
 			+ "auto_promote_queen, ai_difficulty_level) VALUES(?, ?, ?, ?, ?)";
-		try {
-			PreparedStatement pstmt = connect.prepareStatement(request);
+		try (PreparedStatement pstmt = connect.prepareStatement(request)) {
 			pstmt.setString(1, settings.getPlayerId());
 			pstmt.setString(2, settings.getTheme());
 			pstmt.setBoolean(3, settings.isShowLegalMoves());
@@ -29,8 +28,7 @@ public class SettingsDAO extends DAO<Settings> {
 		String request =
 			"UPDATE settings SET theme = ?, show_legal_moves = ?, auto_promote_queen = ?, "
 			+ "ai_difficulty_level = ? WHERE player_id = ?";
-		try {
-			PreparedStatement pstmt = connect.prepareStatement(request);
+		try (PreparedStatement pstmt = connect.prepareStatement(request)) {
 			pstmt.setString(1, settings.getTheme());
 			pstmt.setBoolean(2, settings.isShowLegalMoves());
 			pstmt.setBoolean(3, settings.isAutoPromoteQueen());
@@ -45,8 +43,7 @@ public class SettingsDAO extends DAO<Settings> {
 	@Override
 	public void delete(Settings settings) {
 		String request = "DELETE FROM settings WHERE player_id = ?";
-		try {
-			PreparedStatement pstmt = connect.prepareStatement(request);
+		try (PreparedStatement pstmt = connect.prepareStatement(request)) {
 			pstmt.setString(1, settings.getPlayerId());
 			pstmt.executeUpdate();
 		} catch (SQLException exception) {
@@ -62,14 +59,13 @@ public class SettingsDAO extends DAO<Settings> {
 	public Settings read(String playerId) {
 		Settings settings = null;
 		String request = "SELECT * FROM settings WHERE player_id = ?";
-		try {
-			PreparedStatement pstmt = connect.prepareStatement(request);
+		try (PreparedStatement pstmt = connect.prepareStatement(request)) {
 			pstmt.setString(1, playerId);
-			ResultSet rs = pstmt.executeQuery();
-			if (rs.next()) {
-				settings = resultSetToSettings(rs);
+			try (ResultSet rs = pstmt.executeQuery()) {
+				if (rs.next()) {
+					settings = resultSetToSettings(rs);
+				}
 			}
-			rs.close();
 		} catch (SQLException exception) {
 			exception.printStackTrace();
 		}

@@ -5,6 +5,7 @@ import im.bpu.hexachess.entity.Player;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 
@@ -14,8 +15,7 @@ public class PlayerDAO extends DAO<Player> {
 		String request =
 			"INSERT INTO players (player_id, handle, email, password_hash, avatar, rating, "
 			+ "location, is_verified, joined_at) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)";
-		try {
-			PreparedStatement pstmt = connect.prepareStatement(request);
+		try (PreparedStatement pstmt = connect.prepareStatement(request)) {
 			pstmt.setString(1, player.getPlayerId());
 			pstmt.setString(2, player.getHandle());
 			pstmt.setString(3, player.getEmail());
@@ -38,8 +38,7 @@ public class PlayerDAO extends DAO<Player> {
 	public Player update(Player player) {
 		String request = "UPDATE players SET handle = ?, email = ?, password_hash = ?, avatar = ?, "
 			+ "rating = ?, location = ?, is_verified = ? WHERE player_id = ?";
-		try {
-			PreparedStatement pstmt = connect.prepareStatement(request);
+		try (PreparedStatement pstmt = connect.prepareStatement(request)) {
 			pstmt.setString(1, player.getHandle());
 			pstmt.setString(2, player.getEmail());
 			pstmt.setString(3, player.getPasswordHash());
@@ -57,8 +56,7 @@ public class PlayerDAO extends DAO<Player> {
 	@Override
 	public void delete(Player player) {
 		String request = "DELETE FROM players WHERE player_id = ?";
-		try {
-			PreparedStatement pstmt = connect.prepareStatement(request);
+		try (PreparedStatement pstmt = connect.prepareStatement(request)) {
 			pstmt.setString(1, player.getPlayerId());
 			pstmt.executeUpdate();
 		} catch (SQLException exception) {
@@ -78,12 +76,12 @@ public class PlayerDAO extends DAO<Player> {
 	public Player read(String playerId) {
 		Player player = null;
 		String request = "SELECT * FROM players WHERE player_id = ?";
-		try {
-			PreparedStatement pstmt = connect.prepareStatement(request);
+		try (PreparedStatement pstmt = connect.prepareStatement(request)) {
 			pstmt.setString(1, playerId);
-			ResultSet rs = pstmt.executeQuery();
-			if (rs.next()) {
-				player = resultSetToPlayer(rs);
+			try (ResultSet rs = pstmt.executeQuery()) {
+				if (rs.next()) {
+					player = resultSetToPlayer(rs);
+				}
 			}
 		} catch (SQLException exception) {
 			exception.printStackTrace();
@@ -93,8 +91,8 @@ public class PlayerDAO extends DAO<Player> {
 	public ArrayList<Player> readAll() {
 		ArrayList<Player> players = new ArrayList<>();
 		String request = "SELECT * FROM players";
-		try {
-			ResultSet rs = stmt.executeQuery(request);
+		try (Statement stmt = connect.createStatement();
+			ResultSet rs = stmt.executeQuery(request)) {
 			while (rs.next()) {
 				players.add(resultSetToPlayer(rs));
 			}
@@ -106,12 +104,12 @@ public class PlayerDAO extends DAO<Player> {
 	public Player getPlayerByHandle(String handle) {
 		Player player = null;
 		String request = "SELECT * FROM players WHERE handle = ?";
-		try {
-			PreparedStatement pstmt = connect.prepareStatement(request);
+		try (PreparedStatement pstmt = connect.prepareStatement(request)) {
 			pstmt.setString(1, handle);
-			ResultSet rs = pstmt.executeQuery();
-			if (rs.next()) {
-				player = resultSetToPlayer(rs);
+			try (ResultSet rs = pstmt.executeQuery()) {
+				if (rs.next()) {
+					player = resultSetToPlayer(rs);
+				}
 			}
 		} catch (SQLException exception) {
 			exception.printStackTrace();
@@ -121,12 +119,12 @@ public class PlayerDAO extends DAO<Player> {
 	public ArrayList<Player> searchPlayers(String handle) {
 		ArrayList<Player> players = new ArrayList<>();
 		String request = "SELECT * FROM players WHERE handle LIKE ?";
-		try {
-			PreparedStatement pstmt = connect.prepareStatement(request);
+		try (PreparedStatement pstmt = connect.prepareStatement(request)) {
 			pstmt.setString(1, "%" + handle + "%");
-			ResultSet rs = pstmt.executeQuery();
-			while (rs.next()) {
-				players.add(resultSetToPlayer(rs));
+			try (ResultSet rs = pstmt.executeQuery()) {
+				while (rs.next()) {
+					players.add(resultSetToPlayer(rs));
+				}
 			}
 		} catch (SQLException exception) {
 			exception.printStackTrace();
@@ -135,8 +133,7 @@ public class PlayerDAO extends DAO<Player> {
 	}
 	public boolean updatePassword(String username, String newPassword) {
 		String request = "UPDATE players SET password = ? WHERE username = ?";
-		try {
-			PreparedStatement pstmt = connect.prepareStatement(request);
+		try (PreparedStatement pstmt = connect.prepareStatement(request)) {
 			pstmt.setString(1, newPassword);
 			pstmt.setString(2, username);
 			return pstmt.executeUpdate() > 0;
@@ -147,12 +144,12 @@ public class PlayerDAO extends DAO<Player> {
 	}
 	public boolean checkPassword(String username, String passwordCandidate) {
 		String request = "SELECT password FROM players WHERE username = ?";
-		try {
-			PreparedStatement pstmt = connect.prepareStatement(request);
+		try (PreparedStatement pstmt = connect.prepareStatement(request)) {
 			pstmt.setString(1, username);
-			ResultSet rs = pstmt.executeQuery();
-			if (rs.next()) {
-				return rs.getString("password").equals(passwordCandidate);
+			try (ResultSet rs = pstmt.executeQuery()) {
+				if (rs.next()) {
+					return rs.getString("password").equals(passwordCandidate);
+				}
 			}
 		} catch (SQLException exception) {
 			exception.printStackTrace();
