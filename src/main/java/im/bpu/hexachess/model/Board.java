@@ -6,12 +6,14 @@ import java.util.List;
 import java.util.Map;
 
 public class Board {
-	private int[][] rookDirections = {{-1, -1}, {0, -1}, {1, 0}, {1, 1}, {0, 1}, {-1, 0}};
-	private int[][] bishopDirections = {{-1, -2}, {1, -1}, {2, 1}, {1, 2}, {-1, 1}, {-2, -1}};
-	private int[][] knightOffsets = {
+	private static final int[][] ROOK_DIRECTIONS = {
+		{-1, -1}, {0, -1}, {1, 0}, {1, 1}, {0, 1}, {-1, 0}};
+	private static final int[][] BISHOP_DIRECTIONS = {
+		{-1, -2}, {1, -1}, {2, 1}, {1, 2}, {-1, 1}, {-2, -1}};
+	private static final int[][] KNIGHT_OFFSETS = {
 		{-2, -3}, {-1, -3}, {3, 1}, {3, 2}, {2, 3}, {1, 3}, {-3, -1}, {-3, -2}};
-	private int[][] whitePawnCaptures = {{0, -1}, {-1, 0}};
-	private int[][] blackPawnCaptures = {{0, 1}, {1, 0}};
+	private static final int[][] WHITE_PAWN_CAPTURES = {{0, -1}, {-1, 0}};
+	private static final int[][] BLACK_PAWN_CAPTURES = {{0, 1}, {1, 0}};
 	Map<AxialCoordinate, Piece> pieces = new HashMap<>();
 	public boolean isWhiteTurn = true;
 	private AxialCoordinate enPassant;
@@ -99,7 +101,7 @@ public class Board {
 					moves.add(new Move(pos, fwd2));
 			}
 		}
-		for (int[] offset : piece.isWhite ? whitePawnCaptures : blackPawnCaptures) {
+		for (int[] offset : piece.isWhite ? WHITE_PAWN_CAPTURES : BLACK_PAWN_CAPTURES) {
 			AxialCoordinate cap = pos.add(offset[0], offset[1]);
 			if (!cap.isValid())
 				continue;
@@ -112,16 +114,16 @@ public class Board {
 		List<Move> moves = new ArrayList<>();
 		switch (piece.type) {
 			case KING -> {
-				addStepMoves(pos, piece, rookDirections, moves);
-				addStepMoves(pos, piece, bishopDirections, moves);
+				addStepMoves(pos, piece, ROOK_DIRECTIONS, moves);
+				addStepMoves(pos, piece, BISHOP_DIRECTIONS, moves);
 			}
 			case QUEEN -> {
-				addSlidingMoves(pos, piece, rookDirections, moves);
-				addSlidingMoves(pos, piece, bishopDirections, moves);
+				addSlidingMoves(pos, piece, ROOK_DIRECTIONS, moves);
+				addSlidingMoves(pos, piece, BISHOP_DIRECTIONS, moves);
 			}
-			case ROOK -> addSlidingMoves(pos, piece, rookDirections, moves);
-			case BISHOP -> addSlidingMoves(pos, piece, bishopDirections, moves);
-			case KNIGHT -> addStepMoves(pos, piece, knightOffsets, moves);
+			case ROOK -> addSlidingMoves(pos, piece, ROOK_DIRECTIONS, moves);
+			case BISHOP -> addSlidingMoves(pos, piece, BISHOP_DIRECTIONS, moves);
+			case KNIGHT -> addStepMoves(pos, piece, KNIGHT_OFFSETS, moves);
 			case PAWN -> addPawnMoves(pos, piece, moves);
 		}
 		return moves;

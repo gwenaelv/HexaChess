@@ -39,12 +39,12 @@ import org.mindrot.jbcrypt.BCrypt;
 
 public class Server {
 	private static final int PORT = Integer.parseInt(Config.get("PORT", "8800"));
-	private static final ObjectMapper mapper = new ObjectMapper();
-	private static final Map<String, String> challenges = new ConcurrentHashMap<>();
-	private static final Map<String, String> games = new ConcurrentHashMap<>();
-	private static final Map<String, String> moves = new ConcurrentHashMap<>();
+	private static final ObjectMapper MAPPER = new ObjectMapper();
+	private static final Map<String, String> CHALLENGES = new ConcurrentHashMap<>();
+	private static final Map<String, String> GAMES = new ConcurrentHashMap<>();
+	private static final Map<String, String> MOVES = new ConcurrentHashMap<>();
 	static {
-		mapper.registerModule(new JavaTimeModule());
+		MAPPER.registerModule(new JavaTimeModule());
 	}
 	private static final Key KEY = Keys.hmacShaKeyFor(
 		Config.get("KEY", "hexachess_secret_key_with_a_minimum_of_32_bytes").getBytes());
@@ -81,7 +81,7 @@ public class Server {
 		}
 	}
 	private static boolean isUserInGame(String handle, String gameId) {
-		for (Entry<String, String> game : games.entrySet()) {
+		for (Entry<String, String> game : GAMES.entrySet()) {
 			if (game.getValue().equals(gameId) && game.getKey().contains(handle)) {
 				return true;
 			}
@@ -96,7 +96,7 @@ public class Server {
 				return;
 			}
 			try {
-				ObjectNode jsonNode = mapper.readValue(exchange.getRequestBody(), ObjectNode.class);
+				ObjectNode jsonNode = MAPPER.readValue(exchange.getRequestBody(), ObjectNode.class);
 				if (jsonNode == null || !jsonNode.has("handle") || !jsonNode.has("password")) {
 					sendResponse(exchange, 400, "Bad Request");
 					return;
@@ -113,7 +113,7 @@ public class Server {
 							.signWith(KEY)
 							.subject(handle)
 							.compact());
-					String response = mapper.writeValueAsString(player);
+					String response = MAPPER.writeValueAsString(player);
 					sendResponse(exchange, 200, response);
 				} else {
 					sendResponse(exchange, 401, "Unauthorized");
@@ -132,7 +132,7 @@ public class Server {
 				return;
 			}
 			try {
-				Player player = mapper.readValue(exchange.getRequestBody(), Player.class);
+				Player player = MAPPER.readValue(exchange.getRequestBody(), Player.class);
 				if (player == null) {
 					sendResponse(exchange, 400, "Bad Request");
 					return;
@@ -196,7 +196,7 @@ public class Server {
 						dao.create(settings);
 					}
 					dao.close();
-					String response = mapper.writeValueAsString(settings);
+					String response = MAPPER.writeValueAsString(settings);
 					sendResponse(exchange, 200, response);
 				} catch (Exception exception) {
 					exception.printStackTrace();
@@ -204,7 +204,7 @@ public class Server {
 				}
 			} else if ("POST".equalsIgnoreCase(exchange.getRequestMethod())) {
 				try {
-					Settings settings = mapper.readValue(exchange.getRequestBody(), Settings.class);
+					Settings settings = MAPPER.readValue(exchange.getRequestBody(), Settings.class);
 					if (settings == null) {
 						sendResponse(exchange, 400, "Bad Request");
 						return;
@@ -244,7 +244,7 @@ public class Server {
 				List<Player> players = dao.searchPlayers(handle);
 				dao.close();
 				for (Player player : players) player.setPasswordHash(null);
-				String response = mapper.writeValueAsString(players);
+				String response = MAPPER.writeValueAsString(players);
 				sendResponse(exchange, 200, response);
 			} catch (Exception exception) {
 				exception.printStackTrace();
@@ -271,7 +271,7 @@ public class Server {
 				dao.close();
 				if (player != null) {
 					player.setPasswordHash(null);
-					String response = mapper.writeValueAsString(player);
+					String response = MAPPER.writeValueAsString(player);
 					sendResponse(exchange, 200, response);
 				} else {
 					sendResponse(exchange, 404, "Not Found");
@@ -293,7 +293,7 @@ public class Server {
 				AchievementDAO dao = new AchievementDAO();
 				List<Achievement> achievements = dao.readAll();
 				dao.close();
-				String response = mapper.writeValueAsString(achievements);
+				String response = MAPPER.writeValueAsString(achievements);
 				sendResponse(exchange, 200, response);
 			} catch (Exception exception) {
 				exception.printStackTrace();
@@ -312,7 +312,7 @@ public class Server {
 				PuzzleDAO dao = new PuzzleDAO();
 				List<Puzzle> puzzles = dao.readAll();
 				dao.close();
-				String response = mapper.writeValueAsString(puzzles);
+				String response = MAPPER.writeValueAsString(puzzles);
 				sendResponse(exchange, 200, response);
 			} catch (Exception exception) {
 				exception.printStackTrace();
@@ -331,7 +331,7 @@ public class Server {
 				TournamentDAO dao = new TournamentDAO();
 				List<Tournament> tournaments = dao.readAll();
 				dao.close();
-				String response = mapper.writeValueAsString(tournaments);
+				String response = MAPPER.writeValueAsString(tournaments);
 				sendResponse(exchange, 200, response);
 			} catch (Exception exception) {
 				exception.printStackTrace();
@@ -351,23 +351,23 @@ public class Server {
 				sendResponse(exchange, 405, "Method Not Allowed");
 				return;
 			}
-			ObjectNode jsonNode = mapper.readValue(exchange.getRequestBody(), ObjectNode.class);
+			ObjectNode jsonNode = MAPPER.readValue(exchange.getRequestBody(), ObjectNode.class);
 			if (jsonNode == null || !jsonNode.has("to")) {
 				sendResponse(exchange, 400, "Bad Request");
 				return;
 			}
 			String from = handle;
 			String to = jsonNode.get("to").asText();
-			challenges.put(from, to);
-			if (from.equals(challenges.get(to))) {
-				String gameId = games.computeIfAbsent(from + "-" + to, key -> {
+			CHALLENGES.put(from, to);
+			if (from.equals(CHALLENGES.get(to))) {
+				String gameId = GAMES.computeIfAbsent(from + "-" + to, key -> {
 					byte[] bytes = new byte[9];
 					SecureRandom rand = new SecureRandom();
 					rand.nextBytes(bytes);
 					return Base64.getUrlEncoder().withoutPadding().encodeToString(bytes).substring(
 						0, 11);
 				});
-				games.put(to + "-" + from, gameId);
+				GAMES.put(to + "-" + from, gameId);
 				sendResponse(exchange, 200, gameId);
 			} else {
 				sendResponse(exchange, 200, "Pending");
@@ -383,7 +383,7 @@ public class Server {
 				return;
 			}
 			if ("POST".equalsIgnoreCase(exchange.getRequestMethod())) {
-				ObjectNode jsonNode = mapper.readValue(exchange.getRequestBody(), ObjectNode.class);
+				ObjectNode jsonNode = MAPPER.readValue(exchange.getRequestBody(), ObjectNode.class);
 				if (jsonNode == null || !jsonNode.has("gameId") || !jsonNode.has("move")) {
 					sendResponse(exchange, 400, "Bad Request");
 					return;
@@ -394,7 +394,7 @@ public class Server {
 					return;
 				}
 				String move = jsonNode.get("move").asText();
-				moves.put(gameId, move);
+				MOVES.put(gameId, move);
 				sendResponse(exchange, 200, "OK");
 			} else {
 				String query = exchange.getRequestURI().getQuery();
@@ -407,7 +407,7 @@ public class Server {
 					sendResponse(exchange, 403, "Forbidden");
 					return;
 				}
-				String move = moves.getOrDefault(gameId, "");
+				String move = MOVES.getOrDefault(gameId, "");
 				sendResponse(exchange, 200, move);
 			}
 		}

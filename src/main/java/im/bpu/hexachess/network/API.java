@@ -24,11 +24,11 @@ public class API {
 	private static final String DEV_URL = Config.get("DEV_URL", "http://localhost:8800/api");
 	private static final String PROD_URL = Config.get("PROD_URL", "https://hexachess.bpu.im/api");
 	private static final Duration TIMEOUT_DURATION = Duration.ofSeconds(6);
-	private static final HttpClient client =
+	private static final HttpClient CLIENT =
 		HttpClient.newBuilder().version(HttpClient.Version.HTTP_2).build();
-	private static final ObjectMapper mapper = new ObjectMapper();
+	private static final ObjectMapper MAPPER = new ObjectMapper();
 	static {
-		mapper.registerModule(new JavaTimeModule());
+		MAPPER.registerModule(new JavaTimeModule());
 	}
 	private static HttpResponse<String> sendWithFallback(
 		HttpRequest.Builder requestBuilder, String endpoint) throws Exception {
@@ -45,14 +45,14 @@ public class API {
 	private static HttpResponse<String> sendRequest(
 		HttpRequest.Builder requestBuilder, String baseUrl, String endpoint) throws Exception {
 		HttpRequest request = requestBuilder.uri(URI.create(baseUrl + endpoint)).build();
-		return client.send(request, HttpResponse.BodyHandlers.ofString());
+		return CLIENT.send(request, HttpResponse.BodyHandlers.ofString());
 	}
 	public static Player login(String handle, String password) {
 		try {
-			ObjectNode jsonNode = mapper.createObjectNode();
+			ObjectNode jsonNode = MAPPER.createObjectNode();
 			jsonNode.put("handle", handle);
 			jsonNode.put("password", password);
-			String json = mapper.writeValueAsString(jsonNode);
+			String json = MAPPER.writeValueAsString(jsonNode);
 			HttpRequest.Builder requestBuilder =
 				HttpRequest.newBuilder()
 					.header("Content-Type", "application/json")
@@ -60,7 +60,7 @@ public class API {
 					.timeout(TIMEOUT_DURATION);
 			HttpResponse<String> response = sendWithFallback(requestBuilder, "/login");
 			if (response.statusCode() == 200)
-				return mapper.readValue(response.body(), Player.class);
+				return MAPPER.readValue(response.body(), Player.class);
 		} catch (Exception exception) {
 			exception.printStackTrace();
 		}
@@ -68,7 +68,7 @@ public class API {
 	}
 	public static boolean register(Player player) {
 		try {
-			String json = mapper.writeValueAsString(player);
+			String json = MAPPER.writeValueAsString(player);
 			HttpRequest.Builder requestBuilder =
 				HttpRequest.newBuilder()
 					.header("Content-Type", "application/json")
@@ -88,7 +88,7 @@ public class API {
 			HttpResponse<String> response =
 				sendWithFallback(requestBuilder, "/settings?playerId=" + playerId);
 			if (response.statusCode() == 200)
-				return mapper.readValue(response.body(), Settings.class);
+				return MAPPER.readValue(response.body(), Settings.class);
 		} catch (Exception exception) {
 			exception.printStackTrace();
 		}
@@ -96,7 +96,7 @@ public class API {
 	}
 	public static boolean settings(Settings settings) {
 		try {
-			String json = mapper.writeValueAsString(settings);
+			String json = MAPPER.writeValueAsString(settings);
 			HttpRequest.Builder requestBuilder =
 				HttpRequest.newBuilder()
 					.header("Content-Type", "application/json")
@@ -116,7 +116,7 @@ public class API {
 			HttpResponse<String> response =
 				sendWithFallback(requestBuilder, "/search?handle=" + handle);
 			if (response.statusCode() == 200)
-				return List.of(mapper.readValue(response.body(), Player[].class));
+				return List.of(MAPPER.readValue(response.body(), Player[].class));
 		} catch (Exception exception) {
 			exception.printStackTrace();
 		}
@@ -132,7 +132,7 @@ public class API {
 			HttpResponse<String> response =
 				sendWithFallback(requestBuilder, "/profile?handle=" + handle);
 			if (response.statusCode() == 200)
-				return mapper.readValue(response.body(), Player.class);
+				return MAPPER.readValue(response.body(), Player.class);
 		} catch (Exception exception) {
 			exception.printStackTrace();
 		}
@@ -144,7 +144,7 @@ public class API {
 				HttpRequest.newBuilder().GET().timeout(TIMEOUT_DURATION);
 			HttpResponse<String> response = sendWithFallback(requestBuilder, "/achievements");
 			if (response.statusCode() == 200)
-				return List.of(mapper.readValue(response.body(), Achievement[].class));
+				return List.of(MAPPER.readValue(response.body(), Achievement[].class));
 		} catch (Exception exception) {
 			exception.printStackTrace();
 		}
@@ -156,7 +156,7 @@ public class API {
 				HttpRequest.newBuilder().GET().timeout(TIMEOUT_DURATION);
 			HttpResponse<String> response = sendWithFallback(requestBuilder, "/puzzles");
 			if (response.statusCode() == 200)
-				return List.of(mapper.readValue(response.body(), Puzzle[].class));
+				return List.of(MAPPER.readValue(response.body(), Puzzle[].class));
 		} catch (Exception exception) {
 			exception.printStackTrace();
 		}
@@ -168,7 +168,7 @@ public class API {
 				HttpRequest.newBuilder().GET().timeout(TIMEOUT_DURATION);
 			HttpResponse<String> response = sendWithFallback(requestBuilder, "/tournaments");
 			if (response.statusCode() == 200)
-				return List.of(mapper.readValue(response.body(), Tournament[].class));
+				return List.of(MAPPER.readValue(response.body(), Tournament[].class));
 		} catch (Exception exception) {
 			exception.printStackTrace();
 		}
@@ -176,10 +176,10 @@ public class API {
 	}
 	public static String challenge(String from, String to) {
 		try {
-			ObjectNode jsonNode = mapper.createObjectNode();
+			ObjectNode jsonNode = MAPPER.createObjectNode();
 			jsonNode.put("from", from);
 			jsonNode.put("to", to);
-			String json = mapper.writeValueAsString(jsonNode);
+			String json = MAPPER.writeValueAsString(jsonNode);
 			HttpRequest.Builder requestBuilder =
 				HttpRequest.newBuilder()
 					.header("Content-Type", "application/json")
@@ -193,10 +193,10 @@ public class API {
 	}
 	public static void sendMove(String gameId, String move) {
 		try {
-			ObjectNode jsonNode = mapper.createObjectNode();
+			ObjectNode jsonNode = MAPPER.createObjectNode();
 			jsonNode.put("gameId", gameId);
 			jsonNode.put("move", move);
-			String json = mapper.writeValueAsString(jsonNode);
+			String json = MAPPER.writeValueAsString(jsonNode);
 			HttpRequest.Builder requestBuilder =
 				HttpRequest.newBuilder()
 					.header("Content-Type", "application/json")
