@@ -9,6 +9,7 @@ public class AI {
 	private static final int MAX_BETA = Integer.MAX_VALUE;
 	private static final int MIN_ALPHA = Integer.MIN_VALUE;
 	private int maxDepth = 3;
+	private record MoveEval(Move move, int eval) {}
 	// https://youtu.be/l-hh51ncgDI
 	private int evaluate(final Board board) {
 		int eval = 0;
@@ -47,14 +48,16 @@ public class AI {
 		final AtomicInteger completedMoves = new AtomicInteger(0);
 		final int totalMoves = moves.size();
 		return moves.parallelStream()
-			.max(Comparator.comparingInt(move -> {
+			.map(move -> {
 				final Board clone = new Board(board);
 				clone.movePiece(move.from, move.to);
 				final int eval = minimax(clone, maxDepth - 1, MIN_ALPHA, MAX_BETA, false);
 				if (progressCallback != null)
 					progressCallback.accept((double) completedMoves.incrementAndGet() / totalMoves);
-				return eval;
-			}))
+				return new MoveEval(move, eval);
+			})
+			.max(Comparator.comparingInt(MoveEval::eval))
+			.map(MoveEval::move)
 			.orElse(null);
 	}
 	public void setMaxDepth(final int maxDepth) {
