@@ -55,8 +55,6 @@ public class ProfileWindow {
 			ratingLabel.setText("Rating: " + offline);
 			locationLabel.setText(offline);
 			joinedAtLabel.setText("Joined: " + offline);
-			countryFlagIcon.setManaged(false);
-			countryFlagIcon.setVisible(false);
 			return;
 		}
 		final int rating = player.getRating();
@@ -72,9 +70,8 @@ public class ProfileWindow {
 			final String country = COUNTRIES.getOrDefault(location, location);
 			locationLabel.setText(country);
 			countryFlagIcon.getStyleClass().add("country-" + location);
-		} else {
-			countryFlagIcon.setManaged(false);
-			countryFlagIcon.setVisible(false);
+			countryFlagIcon.setManaged(true);
+			countryFlagIcon.setVisible(true);
 		}
 		if (joinedAt != null) {
 			joinedAtLabel.setText("Joined: " + joinedAt.format(DATE_TIME_FORMATTER));
