@@ -139,36 +139,21 @@ public class API {
 		return null;
 	}
 	public static List<Achievement> achievements() {
-		try {
-			HttpRequest.Builder requestBuilder =
-				HttpRequest.newBuilder().GET().timeout(TIMEOUT_DURATION);
-			HttpResponse<String> response = sendWithFallback(requestBuilder, "/achievements");
-			if (response.statusCode() == 200)
-				return List.of(MAPPER.readValue(response.body(), Achievement[].class));
-		} catch (Exception exception) {
-			exception.printStackTrace();
-		}
-		return Collections.emptyList();
+		return fetch("/achievements", Achievement[].class);
 	}
 	public static List<Puzzle> puzzles() {
-		try {
-			HttpRequest.Builder requestBuilder =
-				HttpRequest.newBuilder().GET().timeout(TIMEOUT_DURATION);
-			HttpResponse<String> response = sendWithFallback(requestBuilder, "/puzzles");
-			if (response.statusCode() == 200)
-				return List.of(MAPPER.readValue(response.body(), Puzzle[].class));
-		} catch (Exception exception) {
-			exception.printStackTrace();
-		}
-		return Collections.emptyList();
+		return fetch("/puzzles", Puzzle[].class);
 	}
 	public static List<Tournament> tournaments() {
+		return fetch("/tournaments", Tournament[].class);
+	}
+	private static <T> List<T> fetch(String endpoint, Class<T[]> clazz) {
 		try {
 			HttpRequest.Builder requestBuilder =
 				HttpRequest.newBuilder().GET().timeout(TIMEOUT_DURATION);
-			HttpResponse<String> response = sendWithFallback(requestBuilder, "/tournaments");
+			HttpResponse<String> response = sendWithFallback(requestBuilder, endpoint);
 			if (response.statusCode() == 200)
-				return List.of(MAPPER.readValue(response.body(), Tournament[].class));
+				return List.of(MAPPER.readValue(response.body(), clazz));
 		} catch (Exception exception) {
 			exception.printStackTrace();
 		}
