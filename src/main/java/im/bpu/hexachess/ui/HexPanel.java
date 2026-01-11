@@ -19,6 +19,9 @@ import javafx.scene.canvas.GraphicsContext;
 import static im.bpu.hexachess.Main.getAspectRatio;
 
 public class HexPanel {
+	private static final double ASPECT_RATIO_THRESHOLD = 1.5;
+	private static final double DESKTOP_RADIUS = 32;
+	private static final double MOBILE_RADIUS = 24;
 	private static final long DT = 500;
 	private static final long MAX_DT = 6000;
 	private final State state;
@@ -33,7 +36,13 @@ public class HexPanel {
 	public HexPanel(final Canvas canvas, final State state) {
 		this.state = state;
 		this.ai.setMaxDepth(SettingsManager.maxDepth);
-		this.geometry = new HexGeometry(getAspectRatio() > 1.5 ? 32 : 24);
+		double radius;
+		if (getAspectRatio() > ASPECT_RATIO_THRESHOLD) {
+			radius = DESKTOP_RADIUS;
+		} else {
+			radius = MOBILE_RADIUS;
+		}
+		this.geometry = new HexGeometry(radius);
 		this.renderer = new HexRenderer(geometry, state.board);
 		this.canvas = canvas;
 		PieceImageLoader.loadImages(this::repaint);

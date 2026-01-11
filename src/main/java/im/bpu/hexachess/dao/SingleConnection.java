@@ -8,11 +8,15 @@ import java.sql.SQLException;
 import com.mysql.cj.jdbc.MysqlDataSource;
 
 public class SingleConnection {
+	private static final String DEFAULT_DB_URL =
+		"jdbc:mysql://localhost:3306/hexachess?serverTimezone=UTC";
+	private static final String DEFAULT_DB_USER = "root";
+	private static final String DEFAULT_WINDOWS_PASS = "";
+	private static final String DEFAULT_LINUX_PASS = "password123";
 	private static Connection connect;
 	private SingleConnection() throws SQLException {
-		String url =
-			Config.get("DB_URL", "jdbc:mysql://localhost:3306/hexachess?serverTimezone=UTC");
-		String login = Config.get("DB_USER", "root");
+		String url = Config.get("DB_URL", DEFAULT_DB_URL);
+		String login = Config.get("DB_USER", DEFAULT_DB_USER);
 		String password = Config.get("DB_PASS", getPassword());
 		MysqlDataSource mysqlDS = new MysqlDataSource();
 		mysqlDS.setURL(url);
@@ -23,7 +27,7 @@ public class SingleConnection {
 	private String getPassword() {
 		String osName = System.getProperty("os.name").toLowerCase();
 		boolean isWindows = osName.contains("win");
-		return isWindows ? "" : "password123";
+		return isWindows ? DEFAULT_WINDOWS_PASS : DEFAULT_LINUX_PASS;
 	}
 	public static synchronized Connection getInstance() throws SQLException {
 		if (connect == null || connect.isClosed())
