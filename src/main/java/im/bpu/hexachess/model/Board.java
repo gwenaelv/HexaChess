@@ -106,11 +106,11 @@ public class Board {
 		}
 		for (final int[] offset : piece.isWhite ? WHITE_PAWN_CAPTURES : BLACK_PAWN_CAPTURES) {
 			final AxialCoordinate cap = pos.add(offset[0], offset[1]);
-			if (!cap.isValid())
-				continue;
-			final Piece target = pieces.get(cap);
-			if ((target != null && target.isWhite != piece.isWhite) || cap.equals(enPassant))
-				moves.add(new Move(pos, cap));
+			if (cap.isValid()) {
+				final Piece target = pieces.get(cap);
+				if ((target != null && target.isWhite != piece.isWhite) || cap.equals(enPassant))
+					moves.add(new Move(pos, cap));
+			}
 		}
 	}
 	private List<Move> getMoves(final AxialCoordinate pos, final Piece piece) {
