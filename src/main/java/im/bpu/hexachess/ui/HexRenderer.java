@@ -34,18 +34,20 @@ class HexRenderer {
 	private static final int RADIUS = 5;
 	private final HexGeometry geometry;
 	private Board board;
-	HexRenderer(HexGeometry geometry, Board board) {
+	HexRenderer(final HexGeometry geometry, final Board board) {
 		this.geometry = geometry;
 		this.board = board;
 	}
-	private void drawPieceImage(GraphicsContext gc, double x, double y, Image image) {
-		double size = geometry.getHexSize() * PIECE_IMAGE_SCALE;
-		double offset = size / 2;
+	private void drawPieceImage(
+		final GraphicsContext gc, final double x, final double y, final Image image) {
+		final double size = geometry.getHexSize() * PIECE_IMAGE_SCALE;
+		final double offset = size / 2;
 		gc.drawImage(image, x - offset, y - offset, size, size);
 	}
-	private void drawPieceFallback(GraphicsContext gc, double x, double y, Piece piece) {
-		double size = geometry.getHexSize();
-		double offset = size / 2;
+	private void drawPieceFallback(
+		final GraphicsContext gc, final double x, final double y, final Piece piece) {
+		final double size = geometry.getHexSize();
+		final double offset = size / 2;
 		gc.setFill(piece.isWhite ? Color.WHITE : Color.BLACK);
 		gc.fillOval(x - offset, y - offset, size, size);
 		gc.setStroke(piece.isWhite ? Color.BLACK : Color.WHITE);
@@ -53,32 +55,34 @@ class HexRenderer {
 		gc.strokeOval(x - offset, y - offset, size, size);
 		gc.setFill(piece.isWhite ? Color.BLACK : Color.WHITE);
 		gc.setFont(Font.font(size * FONT_SIZE_SCALE));
-		String label = String.valueOf(Character.toUpperCase(piece.type.code));
+		final String label = String.valueOf(Character.toUpperCase(piece.type.code));
 		gc.setTextAlign(TextAlignment.CENTER);
 		gc.setTextBaseline(VPos.CENTER);
 		gc.fillText(label, x, y - TEXT_Y_OFFSET);
 	}
-	private void drawPiece(GraphicsContext gc, double x, double y, Piece piece) {
-		Image image = PieceImageLoader.get((piece.isWhite ? "w" : "b") + piece.type.code);
+	private void drawPiece(
+		final GraphicsContext gc, final double x, final double y, final Piece piece) {
+		final Image image = PieceImageLoader.get((piece.isWhite ? "w" : "b") + piece.type.code);
 		if (PieceImageLoader.isLoaded())
 			drawPieceImage(gc, x, y, image);
 		else
 			drawPieceFallback(gc, x, y, piece);
 	}
 	/*
-	private void drawCoordinates(GraphicsContext gc, double x, double y, AxialCoordinate coord) {
-		double size = geometry.getHexSize();
+	private void drawCoordinates(
+		final GraphicsContext gc, final double x, final double y, final AxialCoordinate coord) {
+		final double size = geometry.getHexSize();
 		gc.setFill(Color.RED);
 		gc.setFont(Font.font(size * FONT_SIZE_SCALE));
-		String label = coord.q + "," + coord.r;
+		final String label = coord.q + "," + coord.r;
 		gc.setTextAlign(TextAlignment.CENTER);
 		gc.setTextBaseline(VPos.CENTER);
 		gc.fillText(label, x, y - TEXT_Y_OFFSET);
 	}
 	*/
-	private void drawPath(GraphicsContext gc, Path path) {
+	private void drawPath(final GraphicsContext gc, final Path path) {
 		gc.beginPath();
-		for (PathElement elem : path.getElements()) {
+		for (final PathElement elem : path.getElements()) {
 			if (elem instanceof MoveTo move)
 				gc.moveTo(move.getX(), move.getY());
 			else if (elem instanceof LineTo line)
@@ -87,10 +91,11 @@ class HexRenderer {
 				gc.closePath();
 		}
 	}
-	void drawHex(GraphicsContext gc, double cx, double cy, AxialCoordinate coord,
-		AxialCoordinate selected, List<AxialCoordinate> highlighted) {
-		Point2D center = geometry.hexToPixel(coord.q, coord.r, cx, cy);
-		Path hexPath = geometry.createHexPath(center);
+	void drawHex(final GraphicsContext gc, final double cx, final double cy,
+		final AxialCoordinate coord, final AxialCoordinate selected,
+		final List<AxialCoordinate> highlighted) {
+		final Point2D center = geometry.hexToPixel(coord.q, coord.r, cx, cy);
+		final Path hexPath = geometry.createHexPath(center);
 		gc.setFill(HEX_COLORS[Math.floorMod(coord.q + coord.r, 3)]);
 		drawPath(gc, hexPath);
 		gc.fill();
@@ -101,38 +106,39 @@ class HexRenderer {
 			gc.setFill(GREEN);
 			gc.fill();
 		}
-		Piece piece = board.getPiece(coord);
+		final Piece piece = board.getPiece(coord);
 		if (piece != null)
 			drawPiece(gc, center.getX(), center.getY(), piece);
 		// drawCoordinates(gc, center.getX(), center.getY(), coord);
 	}
-	private void drawCellBorder(GraphicsContext gc, double cx, double cy, int q, int r) {
-		AxialCoordinate coord = new AxialCoordinate(q, r);
+	private void drawCellBorder(
+		final GraphicsContext gc, final double cx, final double cy, final int q, final int r) {
+		final AxialCoordinate coord = new AxialCoordinate(q, r);
 		if (!coord.isValid())
 			return;
-		Point2D center = geometry.hexToPixel(q, r, cx, cy);
-		double radius = geometry.getHexSize();
+		final Point2D center = geometry.hexToPixel(q, r, cx, cy);
+		final double radius = geometry.getHexSize();
 		for (int i = 0; i < 6; i++) {
-			AxialCoordinate neighbor =
+			final AxialCoordinate neighbor =
 				new AxialCoordinate(q + HEX_NEIGHBOR_OFFSETS[i][0], r + HEX_NEIGHBOR_OFFSETS[i][1]);
 			if (neighbor.isValid())
 				continue;
-			int v1 = (i + 4) % 6;
-			int v2 = (i + 5) % 6;
-			double x1 = center.getX() + radius * HexGeometry.HEX_COS[v1];
-			double y1 = center.getY() + radius * HexGeometry.HEX_SIN[v1];
-			double x2 = center.getX() + radius * HexGeometry.HEX_COS[v2];
-			double y2 = center.getY() + radius * HexGeometry.HEX_SIN[v2];
+			final int v1 = (i + 4) % 6;
+			final int v2 = (i + 5) % 6;
+			final double x1 = center.getX() + radius * HexGeometry.HEX_COS[v1];
+			final double y1 = center.getY() + radius * HexGeometry.HEX_SIN[v1];
+			final double x2 = center.getX() + radius * HexGeometry.HEX_COS[v2];
+			final double y2 = center.getY() + radius * HexGeometry.HEX_SIN[v2];
 			gc.strokeLine(x1, y1, x2, y2);
 		}
 	}
-	void drawBoardBorder(GraphicsContext gc, double cx, double cy) {
+	void drawBoardBorder(final GraphicsContext gc, final double cx, final double cy) {
 		gc.setStroke(Color.BLACK);
 		gc.setLineWidth(BORDER_LINE_WIDTH);
 		for (int q = -RADIUS; q <= RADIUS; q++)
 			for (int r = -RADIUS; r <= RADIUS; r++) drawCellBorder(gc, cx, cy, q, r);
 	}
-	void setBoard(Board board) {
+	void setBoard(final Board board) {
 		this.board = board;
 	}
 }

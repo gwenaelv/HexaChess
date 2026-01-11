@@ -37,7 +37,7 @@ public class HexPanel {
 	public HexPanel(final Canvas canvas, final State state) {
 		this.state = state;
 		this.ai.setMaxDepth(SettingsManager.maxDepth);
-		double radius;
+		final double radius;
 		if (getAspectRatio() > ASPECT_RATIO_THRESHOLD) {
 			radius = DESKTOP_RADIUS;
 		} else {
