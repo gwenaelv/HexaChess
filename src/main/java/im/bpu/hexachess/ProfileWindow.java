@@ -7,11 +7,13 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 
 import static im.bpu.hexachess.Main.loadWindow;
@@ -37,6 +39,7 @@ public class ProfileWindow {
 		COUNTRIES.put("us", "United States");
 	}
 	public static String targetHandle;
+	@FXML private HBox profileItem;
 	@FXML private ImageView avatarIcon;
 	@FXML private Label handleLabel;
 	@FXML private Region countryFlagIcon;
@@ -47,35 +50,41 @@ public class ProfileWindow {
 	@FXML
 	private void initialize() {
 		final String handle = targetHandle != null ? targetHandle : SettingsManager.userHandle;
-		final Player player = API.profile(handle);
-		if (player == null) {
-			final String offline = "Offline";
-			avatarIcon.setImage(new Image(BASE_URL, true));
-			handleLabel.setText(handle);
-			ratingLabel.setText("Rating: " + offline);
-			locationLabel.setText(offline);
-			joinedAtLabel.setText("Joined: " + offline);
-			return;
-		}
-		final int rating = player.getRating();
-		final String location = player.getLocation();
-		final LocalDateTime joinedAt = player.getJoinedAt();
-		final String avatarUrl = (player.getAvatar() != null && !player.getAvatar().isEmpty())
-			? player.getAvatar()
-			: BASE_URL;
-		avatarIcon.setImage(new Image(avatarUrl, true));
-		handleLabel.setText(handle);
-		ratingLabel.setText("Rating: " + rating);
-		if (location != null && !location.isEmpty()) {
-			final String country = COUNTRIES.getOrDefault(location, location);
-			locationLabel.setText(country);
-			countryFlagIcon.getStyleClass().add("country-" + location);
-			countryFlagIcon.setManaged(true);
-			countryFlagIcon.setVisible(true);
-		}
-		if (joinedAt != null) {
-			joinedAtLabel.setText("Joined: " + joinedAt.format(DATE_TIME_FORMATTER));
-		}
+		Thread.ofVirtual().start(() -> {
+			final Player player = API.profile(handle);
+			Platform.runLater(() -> {
+				if (player == null) {
+					final String offline = "Offline";
+					avatarIcon.setImage(new Image(BASE_URL, true));
+					handleLabel.setText(handle);
+					ratingLabel.setText("Rating: " + offline);
+					locationLabel.setText(offline);
+					joinedAtLabel.setText("Joined: " + offline);
+				} else {
+					final int rating = player.getRating();
+					final String location = player.getLocation();
+					final LocalDateTime joinedAt = player.getJoinedAt();
+					final String avatarUrl =
+						(player.getAvatar() != null && !player.getAvatar().isEmpty())
+						? player.getAvatar()
+						: BASE_URL;
+					avatarIcon.setImage(new Image(avatarUrl, true));
+					handleLabel.setText(handle);
+					ratingLabel.setText("Rating: " + rating);
+					if (location != null && !location.isEmpty()) {
+						final String country = COUNTRIES.getOrDefault(location, location);
+						locationLabel.setText(country);
+						countryFlagIcon.getStyleClass().add("country-" + location);
+						countryFlagIcon.setManaged(true);
+						countryFlagIcon.setVisible(true);
+					}
+					if (joinedAt != null) {
+						joinedAtLabel.setText("Joined: " + joinedAt.format(DATE_TIME_FORMATTER));
+					}
+				}
+				profileItem.setVisible(true);
+			});
+		});
 	}
 	@FXML
 	private void openMain() {

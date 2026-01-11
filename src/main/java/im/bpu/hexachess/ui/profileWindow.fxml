@@ -6,19 +6,21 @@
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
 <VBox xmlns:fx="http://javafx.com/fxml" alignment="center" spacing="32">
-	<HBox alignment="center" spacing="16" styleClass="profile-container">
-		<VBox styleClass="avatar-container">
-			<ImageView fx:id="avatarIcon" fitHeight="100" fitWidth="100" preserveRatio="true" />
-		</VBox>
-		<VBox alignment="center_left" spacing="4">
-			<HBox alignment="center_left" spacing="8">
-				<Label fx:id="handleLabel" styleClass="h2" />
-				<Region fx:id="countryFlagIcon" managed="false" visible="false" styleClass="country-flags, country-flags-large" />
-			</HBox>
-			<Label fx:id="ratingLabel" styleClass="profile-stat" />
-			<Label fx:id="locationLabel" styleClass="profile-info" />
-			<Label fx:id="joinedAtLabel" styleClass="profile-info" />
-		</VBox>
+	<HBox alignment="center" styleClass="profile-container">
+		<HBox fx:id="profileItem" spacing="16" visible="false">
+			<VBox styleClass="avatar-container">
+				<ImageView fx:id="avatarIcon" fitHeight="100" fitWidth="100" preserveRatio="true" />
+			</VBox>
+			<VBox alignment="center_left" spacing="4">
+				<HBox alignment="center_left" spacing="8">
+					<Label fx:id="handleLabel" styleClass="h2" />
+					<Region fx:id="countryFlagIcon" managed="false" visible="false" styleClass="country-flags, country-flags-large" />
+				</HBox>
+				<Label fx:id="ratingLabel" styleClass="profile-stat" />
+				<Label fx:id="locationLabel" styleClass="profile-info" />
+				<Label fx:id="joinedAtLabel" styleClass="profile-info" />
+			</VBox>
+		</HBox>
 	</HBox>
 	<Button fx:id="backButton" text="Back" onAction="#openMain" />
 </VBox>
