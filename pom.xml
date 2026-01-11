@@ -118,6 +118,9 @@
 				<configuration>
 					<target>${gluonfx.target}</target>
 					<mainClass>${main.class}</mainClass>
+					<nativeImageArgs>
+						<list>-O3</list>
+					</nativeImageArgs>
 					<reflectionList>
 						<list>com.mysql.cj.conf.url.SingleConnectionUrl</list>
 						<list>com.mysql.cj.log.StandardLogger</list>
