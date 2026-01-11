@@ -25,6 +25,10 @@ public class API {
 	private static final String DEFAULT_PROD_URL = "https://hexachess.bpu.im/api";
 	private static final String DEV_URL = Config.get("DEV_URL", DEFAULT_DEV_URL);
 	private static final String PROD_URL = Config.get("PROD_URL", DEFAULT_PROD_URL);
+	private static final String ROOT_HANDLE = "root";
+	private static final String ROOT_ID = "00000000000";
+	private static final String ROOT_EMAIL = "root@localhost";
+	private static final int BASE_ELO = 1200;
 	private static final Duration TIMEOUT_DURATION = Duration.ofSeconds(6);
 	private static final HttpClient CLIENT =
 		HttpClient.newBuilder().version(HttpClient.Version.HTTP_2).build();
@@ -35,9 +39,8 @@ public class API {
 	private static HttpResponse<String> sendWithFallback(
 		HttpRequest.Builder requestBuilder, String endpoint) throws Exception {
 		String authToken = SettingsManager.authToken;
-		if (authToken != null) {
+		if (authToken != null)
 			requestBuilder.header("Authorization", "Bearer " + authToken);
-		}
 		try {
 			return sendRequest(requestBuilder, DEV_URL, endpoint);
 		} catch (Exception primaryException) {
@@ -125,9 +128,8 @@ public class API {
 		return Collections.emptyList();
 	}
 	public static Player profile(String handle) {
-		if ("root".equals(handle)) {
-			return new Player("00000000000", "root", "root@localhost", "", 1200, true, null);
-		}
+		if (ROOT_HANDLE.equals(handle))
+			return new Player(ROOT_ID, ROOT_HANDLE, ROOT_EMAIL, "", BASE_ELO, true, null);
 		try {
 			HttpRequest.Builder requestBuilder =
 				HttpRequest.newBuilder().GET().timeout(TIMEOUT_DURATION);
