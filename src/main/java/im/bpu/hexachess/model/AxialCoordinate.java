@@ -3,6 +3,7 @@ package im.bpu.hexachess.model;
 import java.util.Objects;
 
 public class AxialCoordinate {
+	private static final int RADIUS = 5;
 	public final int q;
 	public final int r;
 	public AxialCoordinate(int q, int r) {
@@ -13,7 +14,7 @@ public class AxialCoordinate {
 		return new AxialCoordinate(q + dq, r + dr);
 	}
 	public boolean isValid() {
-		return Math.abs(q) <= 5 && Math.abs(r) <= 5 && Math.abs(q - r) <= 5;
+		return Math.abs(q) <= RADIUS && Math.abs(r) <= RADIUS && Math.abs(q - r) <= RADIUS;
 	}
 	@Override
 	public boolean equals(Object obj) {

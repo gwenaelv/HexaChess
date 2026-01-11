@@ -8,6 +8,12 @@ import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 public class Main extends Application {
+	private static final double ASPECT_RATIO_THRESHOLD = 1.5;
+	private static final double DESKTOP_WIDTH = 1200;
+	private static final double DESKTOP_HEIGHT = 800;
+	private static final double MOBILE_WIDTH = 540;
+	private static final double MOBILE_HEIGHT = 1200;
+	private static final String WINDOW_TITLE = "HexaChess";
 	@Override
 	public void start(Stage stage) throws Exception {
 		Parent root;
@@ -24,16 +30,16 @@ public class Main extends Application {
 		}
 		double width;
 		double height;
-		if (getAspectRatio() > 1.5) {
-			width = 1200;
-			height = 800;
+		if (getAspectRatio() > ASPECT_RATIO_THRESHOLD) {
+			width = DESKTOP_WIDTH;
+			height = DESKTOP_HEIGHT;
 		} else {
-			width = 540;
-			height = 1200;
+			width = MOBILE_WIDTH;
+			height = MOBILE_HEIGHT;
 		}
 		Scene scene = new Scene(root, width, height);
 		scene.getStylesheets().add(getClass().getResource("ui/style.css").toExternalForm());
-		stage.setTitle("HexaChess");
+		stage.setTitle(WINDOW_TITLE);
 		stage.setScene(scene);
 		stage.show();
 	}

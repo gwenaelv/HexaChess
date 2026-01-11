@@ -25,6 +25,11 @@ import javafx.util.Duration;
 public class MainWindow {
 	private static final String BASE_URL =
 		"https://www.chess.com/bundles/web/images/noavatar_l.gif";
+	private static final double SIDEBAR_HIDDEN_X = -160;
+	private static final double SIDEBAR_VISIBLE_X = 0;
+	private static final int SIDEBAR_DURATION_MS = 160;
+	private static final String COMPUTER_HANDLE = "Computer";
+	private static final int ELO_BASE = 1200;
 	private HexPanel hexPanel;
 	@FXML private Button settingsHelpButton;
 	@FXML private VBox sidebar;
@@ -47,7 +52,7 @@ public class MainWindow {
 	private void initialize() {
 		final State state = State.getState();
 		hexPanel = new HexPanel(canvas, state);
-		sidebar.setTranslateX(-160);
+		sidebar.setTranslateX(SIDEBAR_HIDDEN_X);
 		sidebar.setVisible(false);
 		loadPlayerItem();
 		loadOpponentItem();
@@ -93,8 +98,8 @@ public class MainWindow {
 	private void loadOpponentItem() {
 		Thread.ofVirtual().start(() -> {
 			final State state = State.getState();
-			String handle = "Computer";
-			int rating = ((SettingsManager.maxDepth - 1) / 2 % 3 + 1) * 1200;
+			String handle = COMPUTER_HANDLE;
+			int rating = ((SettingsManager.maxDepth - 1) / 2 % 3 + 1) * ELO_BASE;
 			String location = null;
 			String avatarUrl = BASE_URL;
 			if (state.isMultiplayer) {
@@ -131,46 +136,35 @@ public class MainWindow {
 	@FXML
 	private void toggleSidebar() {
 		final boolean isClosed = !sidebar.isVisible();
-		final Duration duration = Duration.millis(160);
+		final Duration duration = Duration.millis(SIDEBAR_DURATION_MS);
 		final TranslateTransition transition = new TranslateTransition(duration, sidebar);
 		if (isClosed) {
-			transition.setToX(0);
+			transition.setToX(SIDEBAR_VISIBLE_X);
 			sidebar.setVisible(true);
 		} else {
-			transition.setToX(-160);
+			transition.setToX(SIDEBAR_HIDDEN_X);
 			transition.setOnFinished(event -> sidebar.setVisible(false));
 		}
 		transition.play();
 	}
 	@FXML
 	private void onBoardClicked() {
-		if (sidebar.isVisible()) {
+		if (sidebar.isVisible())
 			toggleSidebar();
-		}
 	}
 	@FXML
 	private void restart() {
-		if (State.getState().isMultiplayer)
-			return;
-		hexPanel.restart();
+		if (!State.getState().isMultiplayer)
+			hexPanel.restart();
 	}
 	@FXML
 	private void rewind() {
-		if (State.getState().isMultiplayer)
-			return;
-		hexPanel.rewind();
+		if (!State.getState().isMultiplayer)
+			hexPanel.rewind();
 	}
 	@FXML
 	private void openSettings() {
-		try {
-			FXMLLoader settingsWindowLoader =
-				new FXMLLoader(getClass().getResource("ui/settingsWindow.fxml"));
-			settingsWindowLoader.setController(new SettingsWindow());
-			Parent root = settingsWindowLoader.load();
-			settingsHelpButton.getScene().setRoot(root);
-		} catch (Exception exception) {
-			exception.printStackTrace();
-		}
+		loadWindow("ui/settingsWindow.fxml", new SettingsWindow());
 	}
 	@FXML
 	private void openHelpSettings() {
@@ -184,36 +178,22 @@ public class MainWindow {
 	}
 	@FXML
 	private void openSearch() {
-		try {
-			FXMLLoader searchWindowLoader =
-				new FXMLLoader(getClass().getResource("ui/searchWindow.fxml"));
-			searchWindowLoader.setController(new SearchWindow());
-			Parent root = searchWindowLoader.load();
-			settingsHelpButton.getScene().setRoot(root);
-		} catch (Exception exception) {
-			exception.printStackTrace();
-		}
+		loadWindow("ui/searchWindow.fxml", new SearchWindow());
 	}
 	@FXML
 	private void openProfile() {
-		try {
-			ProfileWindow.targetHandle = SettingsManager.userHandle;
-			FXMLLoader profileWindowLoader =
-				new FXMLLoader(getClass().getResource("ui/profileWindow.fxml"));
-			profileWindowLoader.setController(new ProfileWindow());
-			Parent root = profileWindowLoader.load();
-			settingsHelpButton.getScene().setRoot(root);
-		} catch (Exception exception) {
-			exception.printStackTrace();
-		}
+		ProfileWindow.targetHandle = SettingsManager.userHandle;
+		loadWindow("ui/profileWindow.fxml", new ProfileWindow());
 	}
 	@FXML
 	private void openTournaments() {
+		loadWindow("ui/tournamentsWindow.fxml", new TournamentsWindow());
+	}
+	private void loadWindow(String path, Object controller) {
 		try {
-			FXMLLoader tournamentsWindowLoader =
-				new FXMLLoader(getClass().getResource("ui/tournamentsWindow.fxml"));
-			tournamentsWindowLoader.setController(new TournamentsWindow());
-			Parent root = tournamentsWindowLoader.load();
+			FXMLLoader windowLoader = new FXMLLoader(getClass().getResource(path));
+			windowLoader.setController(controller);
+			Parent root = windowLoader.load();
 			settingsHelpButton.getScene().setRoot(root);
 		} catch (Exception exception) {
 			exception.printStackTrace();
