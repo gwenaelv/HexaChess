@@ -23,7 +23,7 @@
 	</VBox>
 	<Button fx:id="menuButton" StackPane.alignment="top_left" text="≡" onAction="#toggleSidebar" styleClass="menu-button" />
 	<Button fx:id="settingsHelpButton" StackPane.alignment="top_right" text="⋮" onAction="#openHelpSettings" styleClass="settings-help-button" />
-	<HBox fx:id="playerItem" StackPane.alignment="bottom_left" spacing="12" styleClass="player-info-box">
+	<HBox fx:id="playerItem" StackPane.alignment="bottom_left"  managed="false" spacing="12" visible="false" styleClass="player-info-box">
 		<VBox styleClass="avatar-container">
 			<ImageView fx:id="avatarIcon" fitHeight="50" fitWidth="50" preserveRatio="true" />
 		</VBox>
@@ -35,7 +35,7 @@
 			<Label fx:id="ratingLabel" />
 		</VBox>
 	</HBox>
-	<HBox fx:id="opponentItem" StackPane.alignment="bottom_right" spacing="12" styleClass="player-info-box">
+	<HBox fx:id="opponentItem" StackPane.alignment="bottom_right" managed="false" spacing="12" visible="false" styleClass="player-info-box">
 		<VBox alignment="center_right" spacing="4">
 			<HBox alignment="center_right" spacing="8">
 				<Region fx:id="opponentCountryFlagIcon" styleClass="country-flags, country-flags-medium" />
@@ -47,7 +47,7 @@
 			<ImageView fx:id="opponentAvatarIcon" fitHeight="50" fitWidth="50" preserveRatio="true" />
 		</VBox>
 	</HBox>
-	<VBox fx:id="sidebar" maxWidth="160" styleClass="sidebar">
+	<VBox fx:id="sidebar" maxWidth="160" translateX="-160" visible="false" styleClass="sidebar">
 		<Button text="Search" onAction="#openSearch" styleClass="sidebar-item" />
 		<Button text="Profile" onAction="#openProfile" styleClass="sidebar-item" />
 		<Button text="Achievements" onAction="#openSettings" styleClass="sidebar-item" />

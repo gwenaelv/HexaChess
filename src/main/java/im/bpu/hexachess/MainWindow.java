@@ -55,12 +55,6 @@ public class MainWindow {
 	private void initialize() {
 		final State state = State.getState();
 		hexPanel = new HexPanel(canvas, state);
-		sidebar.setTranslateX(SIDEBAR_HIDDEN_X);
-		sidebar.setVisible(false);
-		playerItem.setManaged(false);
-		playerItem.setVisible(false);
-		opponentItem.setManaged(false);
-		opponentItem.setVisible(false);
 		loadPlayerItem();
 		loadOpponentItem();
 		if (state.isMultiplayer) {
