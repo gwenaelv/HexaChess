@@ -106,7 +106,7 @@ mvn -v
 
 ```bash
 cd HexaChess
-mvn clean gluonfx:run
+mvn -q clean gluonfx:run
 ```
 
 ## 🗄️ Database Setup
@@ -201,7 +201,7 @@ Start **Apache** and **MySQL**
 #### Linux
 
 ```bash
-mvn clean gluonfx:build -Pserver
+mvn -q clean gluonfx:build -Pserver
 ```
 
 ### Client
@@ -209,7 +209,7 @@ mvn clean gluonfx:build -Pserver
 #### Linux
 
 ```bash
-mvn clean gluonfx:build
+mvn -q clean gluonfx:build
 ```
 
 #### Windows
@@ -217,8 +217,8 @@ mvn clean gluonfx:build
 Open `x64 Native Tools Command Prompt for VS 2022` instead of regular `cmd`
 
 ```cmd
-mvn clean gluonfx:build
-mvn gluonfx:package & :: (optional, to produce .msi installer)
+mvn -q clean gluonfx:build
+mvn -q gluonfx:package & :: (optional, to produce .msi installer)
 ```
 
 GluonFX doesn't link version information by default. Therefore, you need to manually link it:
@@ -245,8 +245,8 @@ More details:
 #### Android
 
 ```bash
-mvn clean gluonfx:build -Pandroid
-mvn gluonfx:package -Pandroid
+mvn -q clean gluonfx:build -Pandroid
+mvn -q gluonfx:package -Pandroid
 ```
 
 ## 🧾 Configuration
