@@ -12,6 +12,8 @@ import im.bpu.hexachess.network.API;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
+import java.util.function.DoubleConsumer;
 import javafx.application.Platform;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -34,8 +36,13 @@ public class HexPanel {
 	private final Canvas canvas;
 	private boolean isLockedIn = false;
 	private String lastSyncedMoveString = "";
-	public HexPanel(final Canvas canvas, final State state) {
+	private final DoubleConsumer progressCallback;
+	private final Consumer<Boolean> loadingCallback;
+	public HexPanel(final Canvas canvas, final State state, final DoubleConsumer progressCallback,
+		final Consumer<Boolean> loadingCallback) {
 		this.state = state;
+		this.progressCallback = progressCallback;
+		this.loadingCallback = loadingCallback;
 		this.ai.setMaxDepth(SettingsManager.maxDepth);
 		final double radius;
 		if (getAspectRatio() > ASPECT_RATIO_THRESHOLD) {
@@ -90,10 +97,12 @@ public class HexPanel {
 			});
 		} else {
 			Thread.ofVirtual().start(() -> {
-				final Move bestMove = ai.getBestMove(state.board);
+				Platform.runLater(() -> loadingCallback.accept(true));
+				final Move bestMove = ai.getBestMove(state.board, progressCallback);
 				Platform.runLater(() -> {
 					if (bestMove != null)
 						state.board.movePiece(bestMove.from, bestMove.to);
+					loadingCallback.accept(false);
 					isLockedIn = false;
 					repaint();
 				});

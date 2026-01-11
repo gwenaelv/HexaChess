@@ -156,6 +156,7 @@
 						<list>javafx.scene.control.ComboBox</list>
 						<list>javafx.scene.control.Label</list>
 						<list>javafx.scene.control.PasswordField</list>
+						<list>javafx.scene.control.ProgressBar</list>
 						<list>javafx.scene.control.ScrollPane</list>
 						<list>javafx.scene.control.TextField</list>
 						<list>javafx.scene.image.ImageView</list>

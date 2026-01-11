@@ -2,6 +2,8 @@ package im.bpu.hexachess.model;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.DoubleConsumer;
 
 public class AI {
 	private static final int MAX_BETA = Integer.MAX_VALUE;
@@ -38,15 +40,20 @@ public class AI {
 		}
 		return bestEval;
 	}
-	public Move getBestMove(final Board board) {
+	public Move getBestMove(final Board board, final DoubleConsumer progressCallback) {
 		final List<Move> moves = board.listMoves(false);
 		if (moves.isEmpty())
 			return null;
+		final AtomicInteger completedMoves = new AtomicInteger(0);
+		final int totalMoves = moves.size();
 		return moves.parallelStream()
 			.max(Comparator.comparingInt(move -> {
 				final Board clone = new Board(board);
 				clone.movePiece(move.from, move.to);
-				return minimax(clone, maxDepth - 1, MIN_ALPHA, MAX_BETA, false);
+				final int eval = minimax(clone, maxDepth - 1, MIN_ALPHA, MAX_BETA, false);
+				if (progressCallback != null)
+					progressCallback.accept((double) completedMoves.incrementAndGet() / totalMoves);
+				return eval;
 			}))
 			.orElse(null);
 	}

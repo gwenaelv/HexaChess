@@ -54,12 +54,11 @@ public class ProfileWindow {
 			final Player player = API.profile(handle);
 			Platform.runLater(() -> {
 				if (player == null) {
-					final String offline = "Offline";
 					avatarIcon.setImage(new Image(BASE_URL, true));
 					handleLabel.setText(handle);
-					ratingLabel.setText("Rating: " + offline);
-					locationLabel.setText(offline);
-					joinedAtLabel.setText("Joined: " + offline);
+					ratingLabel.setText("Rating: Offline");
+					locationLabel.setText("Offline");
+					joinedAtLabel.setText("Joined: Offline");
 				} else {
 					final int rating = player.getRating();
 					final String location = player.getLocation();

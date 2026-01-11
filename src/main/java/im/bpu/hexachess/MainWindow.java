@@ -13,6 +13,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.ProgressBar;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
@@ -32,6 +33,7 @@ public class MainWindow {
 	private static final String COMPUTER_HANDLE = "Computer";
 	private static final int BASE_ELO = 1200;
 	private static final long DEV_MODE_MS = 2000;
+	private static final int DEFAULT_MAX_DEPTH = 3;
 	private HexPanel hexPanel;
 	private int restartClickCount = 0;
 	private long startRestartClickTime = 0;
@@ -50,12 +52,25 @@ public class MainWindow {
 	@FXML private Label opponentHandleLabel;
 	@FXML private Region opponentCountryFlagIcon;
 	@FXML private Label opponentRatingLabel;
+	@FXML private ProgressBar opponentProgressBar;
 	@FXML private Label fontFamilyLabel;
 	@FXML private Label fontNameLabel;
 	@FXML
 	private void initialize() {
 		final State state = State.getState();
-		hexPanel = new HexPanel(canvas, state);
+		hexPanel = new HexPanel(canvas, state,
+			progressPercentage
+			-> Platform.runLater(() -> opponentProgressBar.setProgress(progressPercentage)),
+			loadingStatus -> Platform.runLater(() -> {
+				final boolean showProgressBar = loadingStatus
+					&& SettingsManager.maxDepth > DEFAULT_MAX_DEPTH && !state.isMultiplayer;
+				opponentRatingLabel.setVisible(!showProgressBar);
+				opponentRatingLabel.setManaged(!showProgressBar);
+				opponentProgressBar.setVisible(showProgressBar);
+				opponentProgressBar.setManaged(showProgressBar);
+				if (!loadingStatus)
+					opponentProgressBar.setProgress(0);
+			}));
 		loadPlayerItem();
 		loadOpponentItem();
 		if (state.isMultiplayer) {
@@ -81,10 +96,9 @@ public class MainWindow {
 			final Player player = API.profile(handle);
 			if (player == null) {
 				Platform.runLater(() -> {
-					final String offline = "Offline";
 					avatarIcon.setImage(new Image(BASE_URL, true));
 					handleLabel.setText(handle);
-					ratingLabel.setText("Rating: " + offline);
+					ratingLabel.setText("Rating: Offline");
 					playerItem.setManaged(true);
 					playerItem.setVisible(true);
 				});
@@ -116,18 +130,15 @@ public class MainWindow {
 			int rating = ((SettingsManager.maxDepth - 1) / 2 % 3 + 1) * BASE_ELO;
 			String location = null;
 			String avatarUrl = BASE_URL;
-			if (state.isMultiplayer) {
-				if (state.opponentHandle != null) {
-					handle = state.opponentHandle;
-					final Player opponent = API.profile(handle);
-					if (opponent != null) {
-						rating = opponent.getRating();
-						location = opponent.getLocation();
-						avatarUrl =
-							(opponent.getAvatar() != null && !opponent.getAvatar().isEmpty())
-							? opponent.getAvatar()
-							: BASE_URL;
-					}
+			if (state.isMultiplayer && state.opponentHandle != null) {
+				handle = state.opponentHandle;
+				final Player opponent = API.profile(handle);
+				if (opponent != null) {
+					rating = opponent.getRating();
+					location = opponent.getLocation();
+					avatarUrl = (opponent.getAvatar() != null && !opponent.getAvatar().isEmpty())
+						? opponent.getAvatar()
+						: BASE_URL;
 				}
 			}
 			final String finalHandle = handle;
@@ -179,9 +190,8 @@ public class MainWindow {
 			if (restartClickCount == 0 || (startTime - startRestartClickTime > DEV_MODE_MS)) {
 				restartClickCount = 1;
 				startRestartClickTime = startTime;
-			} else {
+			} else
 				restartClickCount++;
-			}
 			if (restartClickCount >= 7) {
 				restartClickCount = 0;
 				State.getState().isDeveloperMode = !State.getState().isDeveloperMode;
