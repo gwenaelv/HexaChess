@@ -245,8 +245,7 @@ More details:
 #### Android
 
 ```bash
-mvn -q clean gluonfx:build -Pandroid
-mvn -q gluonfx:package -Pandroid
+mvn -q clean gluonfx:build gluonfx:package -Pandroid
 ```
 
 ## 🧾 Configuration
@@ -344,6 +343,7 @@ canvas.getTransforms().add(new Rotate(180, canvas.getWidth() / 2, canvas.getHeig
 ## 🚧 TODO
 
 - [ ] **Requirements**: Follow the project requirements PDF.
+- [ ] **Maven Profiles**: Separate profiles for server and client builds.
 - [ ] **Android Fonts**: Ensure proper bold font and button icon rendering.
 - [ ] **Android Icon**: Fix the smaller icon in the launcher.
 - [ ] **Windows Installer**: Fix name, version, and add update functionality.
