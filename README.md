@@ -348,13 +348,16 @@ canvas.getTransforms().add(new Rotate(180, canvas.getWidth() / 2, canvas.getHeig
 - [ ] **Android Icon**: Fix the smaller icon in the launcher.
 - [ ] **Windows Installer**: Fix name, version, and add update functionality.
 - [ ] **Player Profile**: Edit profile, change password, upload avatar.
+- [ ] **Upload Checks**: Prevent malicious file URLs (e.g., avatar URLs).
+- [ ] **Friends List**: Add or remove friends and view online status.
+- [ ] **Lobby**: List online players for tournaments, players with challenges, matchmaking, and accepting or declining challenges.
 - [ ] **PVP Mode**: Offline player vs. player mode. Allow playing against self via /challenge.
 - [ ] **Multiplayer Mode**: Online player vs. player mode.
 - [ ] **Timer/Clock**
 - [ ] **Database Integration**: Save played games, etc.
 - [ ] **Theme Support**: Light/Dark mode.
 - [ ] **Sound Effects**: Add audio feedback for moves and game events.
-- [ ] **Animations**
+- [ ] **Animations**: Smooth piece movement and captures.
 - [ ] **Achievements**
 - [ ] **Puzzles**
 - [ ] **Tournaments**
