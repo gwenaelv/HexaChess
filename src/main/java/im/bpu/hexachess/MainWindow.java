@@ -43,6 +43,8 @@ public class MainWindow {
 	@FXML private Button settingsHelpButton;
 	@FXML private VBox sidebar;
 	@FXML private Canvas canvas;
+	@FXML private VBox gameOverContainer;
+	@FXML private Label gameOverLabel;
 	@FXML private Button restartButton;
 	@FXML private Button rewindButton;
 	@FXML private HBox playerItem;
@@ -64,15 +66,23 @@ public class MainWindow {
 		hexPanel = new HexPanel(canvas, state,
 			progressPercentage
 			-> Platform.runLater(() -> opponentProgressBar.setProgress(progressPercentage)),
-			loadingStatus -> Platform.runLater(() -> {
+			loadingStatus
+			-> Platform.runLater(() -> {
 				final boolean showProgressBar = loadingStatus
 					&& SettingsManager.maxDepth > DEFAULT_MAX_DEPTH && !state.isMultiplayer;
-				opponentRatingLabel.setVisible(!showProgressBar);
 				opponentRatingLabel.setManaged(!showProgressBar);
-				opponentProgressBar.setVisible(showProgressBar);
+				opponentRatingLabel.setVisible(!showProgressBar);
 				opponentProgressBar.setManaged(showProgressBar);
+				opponentProgressBar.setVisible(showProgressBar);
 				if (!loadingStatus)
 					opponentProgressBar.setProgress(0);
+			}),
+			gameOverMessage -> Platform.runLater(() -> {
+				canvas.setManaged(false);
+				canvas.setVisible(false);
+				gameOverLabel.setText(gameOverMessage);
+				gameOverContainer.setManaged(true);
+				gameOverContainer.setVisible(true);
 			}));
 		loadPlayerItem();
 		loadOpponentItem();
@@ -202,6 +212,10 @@ public class MainWindow {
 	@FXML
 	private void restart() {
 		if (!State.getState().isMultiplayer) {
+			gameOverContainer.setManaged(false);
+			gameOverContainer.setVisible(false);
+			canvas.setManaged(true);
+			canvas.setVisible(true);
 			hexPanel.restart();
 			final long startTime = System.currentTimeMillis();
 			if (restartClickCount == 0 || (startTime - startRestartClickTime > DEV_MODE_MS)) {
@@ -226,8 +240,13 @@ public class MainWindow {
 	}
 	@FXML
 	private void rewind() {
-		if (!State.getState().isMultiplayer)
+		if (!State.getState().isMultiplayer) {
+			gameOverContainer.setManaged(false);
+			gameOverContainer.setVisible(false);
+			canvas.setManaged(true);
+			canvas.setVisible(true);
 			hexPanel.rewind();
+		}
 	}
 	@FXML
 	private void openSettings() {

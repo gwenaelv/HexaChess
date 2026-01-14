@@ -35,14 +35,17 @@ public class HexPanel {
 	private final List<AxialCoordinate> highlighted = new ArrayList<>();
 	private final Canvas canvas;
 	private boolean isLockedIn = false;
+	private boolean isGameOver = false;
 	private String lastSyncedMoveString = "";
 	private final DoubleConsumer progressCallback;
 	private final Consumer<Boolean> loadingCallback;
+	private final Consumer<String> gameEndCallback;
 	public HexPanel(final Canvas canvas, final State state, final DoubleConsumer progressCallback,
-		final Consumer<Boolean> loadingCallback) {
+		final Consumer<Boolean> loadingCallback, final Consumer<String> gameEndCallback) {
 		this.state = state;
 		this.progressCallback = progressCallback;
 		this.loadingCallback = loadingCallback;
+		this.gameEndCallback = gameEndCallback;
 		this.ai.setMaxDepth(SettingsManager.maxDepth);
 		final double radius;
 		if (getAspectRatio() > ASPECT_RATIO_THRESHOLD) {
@@ -81,13 +84,40 @@ public class HexPanel {
 		highlighted.clear();
 		repaint();
 	}
+	private void checkGameOver() {
+		if (isGameOver)
+			return;
+		if (!state.board.hasLegalMoves(state.board.isWhiteTurn)) {
+			isGameOver = true;
+			if (state.board.isInCheck(state.board.isWhiteTurn)) {
+				final String winner = state.board.isWhiteTurn ? "Black" : "White";
+				Platform.runLater(() -> gameEndCallback.accept("Checkmate!\n" + winner + " Wins"));
+			} else {
+				Platform.runLater(() -> gameEndCallback.accept("Stalemate!\nDraw"));
+			}
+		} else {
+			int repetitionCount = 0;
+			for (Board historyBoard : state.history) {
+				if (historyBoard.equals(state.board)) {
+					repetitionCount++;
+				}
+			}
+			if (repetitionCount >= 2) {
+				isGameOver = true;
+				Platform.runLater(() -> gameEndCallback.accept("Threefold Repetition!\nDraw"));
+			}
+		}
+	}
 	private void executeMove(final AxialCoordinate target) {
-		if (isLockedIn)
+		if (isLockedIn || isGameOver)
 			return;
 		final String moveString = selected.q + "," + selected.r + "->" + target.q + "," + target.r;
 		state.history.push(new Board(state.board));
 		state.board.movePiece(selected, target);
 		deselect();
+		checkGameOver();
+		if (isGameOver)
+			return;
 		isLockedIn = true;
 		if (state.isMultiplayer) {
 			Thread.ofVirtual().start(() -> {
@@ -100,8 +130,11 @@ public class HexPanel {
 				Platform.runLater(() -> loadingCallback.accept(true));
 				final Move bestMove = ai.getBestMove(state.board, progressCallback);
 				Platform.runLater(() -> {
-					if (bestMove != null)
+					if (bestMove != null) {
+						state.history.push(new Board(state.board));
 						state.board.movePiece(bestMove.from, bestMove.to);
+						checkGameOver();
+					}
 					loadingCallback.accept(false);
 					isLockedIn = false;
 					repaint();
@@ -114,6 +147,8 @@ public class HexPanel {
 		Thread.ofVirtual().start(() -> {
 			long dt = DT;
 			while (true) {
+				if (isGameOver)
+					break;
 				final String moveString = API.getMove(state.gameId);
 				if (moveString != null && !moveString.isEmpty()
 					&& !moveString.equals(lastSyncedMoveString)) {
@@ -127,6 +162,7 @@ public class HexPanel {
 						Integer.parseInt(toString[0]), Integer.parseInt(toString[1]));
 					Platform.runLater(() -> {
 						state.board.movePiece(from, to);
+						checkGameOver();
 						isLockedIn = false;
 						repaint();
 					});
@@ -149,7 +185,7 @@ public class HexPanel {
 		repaint();
 	}
 	private void handleMouseClick(final double x, final double y) {
-		if (isLockedIn)
+		if (isLockedIn || isGameOver)
 			return;
 		final double cx = canvas.getWidth() / 2;
 		final double cy = canvas.getHeight() / 2;
@@ -163,8 +199,8 @@ public class HexPanel {
 			return;
 		}
 		final Piece piece = state.board.getPiece(clicked);
-		if ((piece != null && piece.isWhite == state.board.isWhiteTurn)
-			&& (!state.isMultiplayer || piece.isWhite == state.isWhitePlayer)) {
+		if (piece != null && piece.isWhite == state.board.isWhiteTurn
+			&& piece.isWhite == state.isWhitePlayer) {
 			SoundManager.playClick();
 			selectPiece(clicked);
 		} else
@@ -174,6 +210,7 @@ public class HexPanel {
 		if (isLockedIn || state.isMultiplayer)
 			return;
 		state.clear();
+		isGameOver = false;
 		ai.setMaxDepth(SettingsManager.maxDepth);
 		renderer.setBoard(state.board);
 		deselect();
@@ -182,6 +219,9 @@ public class HexPanel {
 		if (isLockedIn || state.isMultiplayer || state.history.isEmpty())
 			return;
 		state.board = state.history.pop();
+		if (!state.history.isEmpty() && state.board.isWhiteTurn != state.isWhitePlayer)
+			state.board = state.history.pop();
+		isGameOver = false;
 		renderer.setBoard(state.board);
 		deselect();
 	}
