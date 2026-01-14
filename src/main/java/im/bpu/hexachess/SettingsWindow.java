@@ -7,11 +7,13 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Slider;
+import javafx.scene.control.Tooltip;
 
 import static im.bpu.hexachess.Main.loadWindow;
 
 public class SettingsWindow {
 	@FXML private ComboBox<String> maxDepthComboBox;
+	@FXML private Tooltip aiDifficultyLevelTooltip;
 	@FXML private Slider volumeSlider;
 	@FXML private Button backButton;
 	@FXML
@@ -23,10 +25,20 @@ public class SettingsWindow {
 			case 5 -> maxDepthComboBox.getSelectionModel().select("Slowest");
 			default -> maxDepthComboBox.getSelectionModel().select("Default");
 		}
-		volumeSlider.setValue(SettingsManager.volume);
-		volumeSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
-			SettingsManager.setVolume(newValue.doubleValue());
+		aiDifficultyLevelTooltip.setText(switch (maxDepthComboBox.getValue()) {
+			case "Fast" -> "You can win";
+			case "Slowest" -> "You can lose";
+			default -> "You can draw";
 		});
+		maxDepthComboBox.valueProperty().addListener(
+			(observable, oldValue, newValue) -> aiDifficultyLevelTooltip.setText(switch (newValue) {
+				case "Fast" -> "You can win";
+				case "Slowest" -> "You can lose";
+				default -> "You can draw";
+			}));
+		volumeSlider.setValue(SettingsManager.volume);
+		volumeSlider.valueProperty().addListener(
+			(observable, oldValue, newValue) -> SettingsManager.setVolume(newValue.doubleValue()));
 	}
 	@FXML
 	private void openMain() {
