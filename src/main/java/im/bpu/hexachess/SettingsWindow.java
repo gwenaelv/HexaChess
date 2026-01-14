@@ -6,11 +6,13 @@ import im.bpu.hexachess.network.API;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Slider;
 
 import static im.bpu.hexachess.Main.loadWindow;
 
 public class SettingsWindow {
 	@FXML private ComboBox<String> maxDepthComboBox;
+	@FXML private Slider volumeSlider;
 	@FXML private Button backButton;
 	@FXML
 	private void initialize() {
@@ -21,6 +23,10 @@ public class SettingsWindow {
 			case 5 -> maxDepthComboBox.getSelectionModel().select("Slowest");
 			default -> maxDepthComboBox.getSelectionModel().select("Default");
 		}
+		volumeSlider.setValue(SettingsManager.volume);
+		volumeSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
+			SettingsManager.setVolume(newValue.doubleValue());
+		});
 	}
 	@FXML
 	private void openMain() {

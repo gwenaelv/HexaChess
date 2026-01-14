@@ -13,6 +13,7 @@
 .password-field,
 .player-item,
 .profile-container,
+.slider .thumb,
 .text-field
 {
 	/* sandybrown */
@@ -35,7 +36,8 @@
 }
 
 .avatar-container,
-.progress-bar
+.progress-bar,
+.slider .track
 {
 	-fx-background-color: white;
 	-fx-border-color: black;
@@ -78,7 +80,8 @@
 
 .button,
 .combo-box-base,
-.player-item
+.player-item,
+.slider
 {
 	-fx-cursor: hand;
 	cursor: hand;
@@ -92,6 +95,7 @@
 .password-field:focused,
 .player-item:hover,
 .sidebar-item:hover,
+.slider .thumb:hover,
 .text-field:focused
 {
 	/* navajowhite */
@@ -101,7 +105,8 @@
 
 .button:pressed,
 .menu-item:pressed,
-.player-item:pressed
+.player-item:pressed,
+.slider .thumb:pressed
 {
 	/* peru */
 	-fx-background-color: rgb(209, 139, 71);
@@ -399,6 +404,23 @@
 	-fx-border-width: 0 0 3px 0;
 	-fx-pref-width: 160px;
 	border-width: 0 0 3px 0;
+}
+
+.slider .thumb
+{
+	-fx-background-radius: 12;
+	-fx-border-radius: 12;
+	-fx-pref-height: 24px;
+	-fx-pref-width: 24px;
+	border-radius: 12;
+}
+
+.slider .track
+{
+	-fx-background-radius: 6;
+	-fx-border-radius: 6;
+	-fx-pref-height: 12px;
+	border-radius: 6;
 }
 
 .square-button
