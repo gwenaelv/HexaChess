@@ -68,6 +68,7 @@ public class TournamentsWindow {
 								statusLabel.setText(bundle.getString("tournaments.status"));
 								statusLabel.getStyleClass().add("text-danger");
 							}
+							tournamentItem.setOnMouseClicked(event -> openTournamentPage(tournament));
 							tournamentContainer.getChildren().add(tournamentItem);
 						} catch (final Exception exception) {
 							exception.printStackTrace();
@@ -77,6 +78,12 @@ public class TournamentsWindow {
 			});
 		});
 	}
+
+	private void openTournamentPage(Tournament tournament) {
+        TournamentWindow.targetTournament = tournament;
+        loadWindow("ui/tournamentWindow.fxml", new TournamentWindow(), backButton);
+    }
+	
 	@FXML
 	private void openMain() {
 		loadWindow("ui/mainWindow.fxml", new MainWindow(), backButton);
