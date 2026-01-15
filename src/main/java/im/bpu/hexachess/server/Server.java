@@ -1,20 +1,5 @@
 package im.bpu.hexachess.server;
 
-import im.bpu.hexachess.Config;
-import im.bpu.hexachess.dao.AchievementDAO;
-import im.bpu.hexachess.dao.PlayerDAO;
-import im.bpu.hexachess.dao.PuzzleDAO;
-import im.bpu.hexachess.dao.SettingsDAO;
-import im.bpu.hexachess.dao.TournamentDAO;
-import im.bpu.hexachess.entity.Achievement;
-import im.bpu.hexachess.entity.Player;
-import im.bpu.hexachess.entity.Puzzle;
-import im.bpu.hexachess.entity.Settings;
-import im.bpu.hexachess.entity.Tournament;
-
-import com.sun.net.httpserver.HttpExchange;
-import com.sun.net.httpserver.HttpHandler;
-import com.sun.net.httpserver.HttpServer;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
@@ -28,14 +13,31 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
+
 import javax.crypto.SecretKey;
+
+import org.mindrot.jbcrypt.BCrypt;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.sun.net.httpserver.HttpExchange;
+import com.sun.net.httpserver.HttpHandler;
+import com.sun.net.httpserver.HttpServer;
+
+import im.bpu.hexachess.Config;
+import im.bpu.hexachess.dao.AchievementDAO;
+import im.bpu.hexachess.dao.PlayerDAO;
+import im.bpu.hexachess.dao.PuzzleDAO;
+import im.bpu.hexachess.dao.SettingsDAO;
+import im.bpu.hexachess.dao.TournamentDAO;
+import im.bpu.hexachess.entity.Achievement;
+import im.bpu.hexachess.entity.Player;
+import im.bpu.hexachess.entity.Puzzle;
+import im.bpu.hexachess.entity.Settings;
+import im.bpu.hexachess.entity.Tournament;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
-import org.mindrot.jbcrypt.BCrypt;
 
 public class Server {
 	private static final int PORT = Integer.parseInt(Config.get("PORT", "8800"));
@@ -60,6 +62,7 @@ public class Server {
 		server.createContext("/api/tournaments", new TournamentsHandler());
 		server.createContext("/api/challenge", new ChallengeHandler());
 		server.createContext("/api/sync", new SyncHandler());
+		server.createContext("/api/tournaments/join", new TournamentJoinHandler());
 		server.setExecutor(Executors.newCachedThreadPool());
 		server.start();
 		System.out.println("HexaChess Server started on port " + PORT);
@@ -384,6 +387,42 @@ public class Server {
 				sendResponse(exchange, 200, gameId);
 			} else {
 				sendResponse(exchange, 200, "Pending");
+			}
+		}
+	}
+
+	static class TournamentJoinHandler implements HttpHandler {
+		@Override
+		public void handle(HttpExchange exchange) throws IOException {
+			String handle = auth(exchange); 
+			if (handle == null) {
+				sendResponse(exchange, 401, "Unauthorized");
+				return;
+			}
+			if (!"POST".equalsIgnoreCase(exchange.getRequestMethod())) {
+				sendResponse(exchange, 405, "Method Not Allowed");
+				return;
+			}
+			try {
+				ObjectNode json = MAPPER.readValue(exchange.getRequestBody(), ObjectNode.class);
+				String tournamentId = json.get("tournamentId").asText();
+
+				PlayerDAO playerDAO = new PlayerDAO();
+				Player player = playerDAO.getPlayerByHandle(handle);
+
+				if (player != null) {
+					TournamentDAO tournamentDAO = new TournamentDAO();
+					if (tournamentDAO.addParticipant(tournamentId, player.getPlayerId())) {
+						sendResponse(exchange, 200, "Joined");
+					} else {
+						sendResponse(exchange, 409, "Already joined or Error");
+					}
+				} else {
+					sendResponse(exchange, 404, "Player not found");
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+				sendResponse(exchange, 500, "Internal Error");
 			}
 		}
 	}
