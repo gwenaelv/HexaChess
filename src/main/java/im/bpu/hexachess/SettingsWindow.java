@@ -34,17 +34,35 @@ public class SettingsWindow {
 		final String aiDifficultyLevel = mapMaxDepthToAiDifficultyLevel(SettingsManager.maxDepth);
 		maxDepthComboBox.getSelectionModel().select(aiDifficultyLevel);
 		updateAiDifficultyLevelTooltip(aiDifficultyLevel);
-		maxDepthComboBox.valueProperty().addListener(
-			(observable, oldValue, newValue) -> updateAiDifficultyLevelTooltip(newValue));
+		maxDepthComboBox.valueProperty().addListener((observable, oldValue, newValue) -> {
+			if (newValue != null) {
+				SettingsManager.setMaxDepth(mapAiDifficultyLevelToMaxDepth(newValue));
+				updateAiDifficultyLevelTooltip(newValue);
+				syncSettings();
+			}
+		});
 	}
 	private void setupTheme() {
 		themeComboBox.getItems().addAll("Light", "Dark", "Black");
 		themeComboBox.getSelectionModel().select(SettingsManager.theme);
+		themeComboBox.valueProperty().addListener((observable, oldValue, newValue) -> {
+			if (newValue != null) {
+				SettingsManager.setTheme(newValue);
+				Main.applyTheme(backButton.getScene());
+				syncSettings();
+			}
+		});
 	}
 	private void setupLanguage() {
 		languageComboBox.getItems().addAll(
 			"English", "Français", "Deutsch", "Polski", "Русский", "Українська");
 		languageComboBox.getSelectionModel().select(SettingsManager.language);
+		languageComboBox.valueProperty().addListener((observable, oldValue, newValue) -> {
+			if (newValue != null) {
+				SettingsManager.setLanguage(newValue);
+				loadWindow("ui/settingsWindow.fxml", new SettingsWindow(), backButton);
+			}
+		});
 	}
 	private void setupVolume() {
 		volumeSlider.setValue(SettingsManager.volume);
@@ -78,17 +96,7 @@ public class SettingsWindow {
 			return 5;
 		return 3;
 	}
-	@FXML
-	private void openMain() {
-		final String selectedAiDifficultyLevel = maxDepthComboBox.getValue();
-		final String selectedTheme = themeComboBox.getValue();
-		final String selectedLanguage = languageComboBox.getValue();
-		if (selectedAiDifficultyLevel != null)
-			SettingsManager.setMaxDepth(mapAiDifficultyLevelToMaxDepth(selectedAiDifficultyLevel));
-		if (selectedTheme != null)
-			SettingsManager.setTheme(selectedTheme);
-		if (selectedLanguage != null)
-			SettingsManager.setLanguage(selectedLanguage);
+	private void syncSettings() {
 		if (SettingsManager.playerId != null) {
 			Thread.ofVirtual().start(() -> {
 				final Settings settings = new Settings(SettingsManager.playerId,
@@ -96,6 +104,9 @@ public class SettingsWindow {
 				API.settings(settings);
 			});
 		}
+	}
+	@FXML
+	private void openMain() {
 		loadWindow("ui/mainWindow.fxml", new MainWindow(), backButton);
 	}
 	@FXML
