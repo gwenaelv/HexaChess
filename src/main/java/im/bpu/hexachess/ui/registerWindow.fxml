@@ -15,6 +15,6 @@
 		<PasswordField fx:id="passwordField" onAction="#handleRegister" />
 	</VBox>
 	<Label fx:id="statusLabel" managed="false" visible="false" styleClass="text-danger" />
-	<Button fx:id="signUpButton" text="%register.title" onAction="#handleRegister" />
+	<Button fx:id="signUpButton" text="%register.button" onAction="#handleRegister" />
 	<Button fx:id="backButton" text="%common.back" onAction="#openStart" />
 </VBox>

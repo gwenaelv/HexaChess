@@ -13,6 +13,6 @@
 		<PasswordField fx:id="passwordField" onAction="#handleLogin" />
 	</VBox>
 	<Label fx:id="errorLabel" managed="false" visible="false" styleClass="text-danger" />
-	<Button fx:id="loginButton" text="%login.title" onAction="#handleLogin" />
+	<Button fx:id="loginButton" text="%login.button" onAction="#handleLogin" />
 	<Button fx:id="backButton" text="%common.back" onAction="#openStart" />
 </VBox>
