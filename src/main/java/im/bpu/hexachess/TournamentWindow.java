@@ -5,11 +5,10 @@ import im.bpu.hexachess.network.API;
 
 import java.time.format.DateTimeFormatter;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
+// import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.layout.VBox;
 
 import static im.bpu.hexachess.Main.loadWindow;
 
@@ -61,8 +60,8 @@ public class TournamentWindow {
 	}
 	@FXML
 	private void handleViewParticipants() {
-		ParticipantsWindow.targetTournament = this.targetTournament;
-		loadWindow("ui/participantsWindow.fxml", new ParticipantsWindow(), backButton);
+		// ParticipantsWindow.targetTournament = this.targetTournament;
+		// loadWindow("ui/participantsWindow.fxml", new ParticipantsWindow(), backButton);
 	}
 	@FXML
 	private void openTournaments() {

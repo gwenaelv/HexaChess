@@ -71,7 +71,7 @@ public class PlayerDAO extends DAO<Player> {
 			exception.printStackTrace();
 		}
 	}
-	private Player resultSetToPlayer(ResultSet rs) throws SQLException {
+	public static Player resultSetToPlayer(ResultSet rs) throws SQLException {
 		Player player = new Player(rs.getString("player_id"), rs.getString("handle"),
 			rs.getString("email"), rs.getString("password_hash"), rs.getInt("rating"),
 			rs.getBoolean("is_verified"),

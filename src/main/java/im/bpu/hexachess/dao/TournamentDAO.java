@@ -33,7 +33,7 @@ public class TournamentDAO extends DAO<Tournament> {
 			pstmt.setString(1, tournament.getTournamentId());
 			pstmt.setString(2, tournament.getName());
 			pstmt.setString(3, tournament.getDescription());
-			// Gestion des dates pouvant être nulles
+			// Management of dates that may be null
 			if (tournament.getStartTime() != null)
 				pstmt.setTimestamp(4, Timestamp.valueOf(tournament.getStartTime()));
 			else
