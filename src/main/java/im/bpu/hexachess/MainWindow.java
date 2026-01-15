@@ -98,22 +98,25 @@ public class MainWindow {
 			rewindButton.setVisible(false);
 		}
 		if (state.isDeveloperMode) {
-			Platform.runLater(() -> {
-				final Font font = settingsHelpButton.getFont();
-				final String fontFamily = font.getFamily();
-				final String fontName = font.getName();
-				final double width = Screen.getPrimary().getBounds().getWidth();
-				final double height = Screen.getPrimary().getBounds().getHeight();
-				final double aspectRatio = width / height;
-				fontFamilyLabel.setText("Family: " + fontFamily);
-				fontNameLabel.setText("Name: " + fontName);
-				screenWidthLabel.setText("Width: " + (int) width);
-				screenHeightLabel.setText("Height: " + (int) height);
-				aspectRatioLabel.setText("Aspect Ratio: " + aspectRatio);
-				devModeContainer.setManaged(true);
-				devModeContainer.setVisible(true);
-			});
+			Platform.runLater(this::showDevModeLabels);
 		}
+	}
+	private void showDevModeLabels() {
+		final ResourceBundle bundle = Main.getBundle();
+		final Font font = settingsHelpButton.getFont();
+		final String fontFamily = font.getFamily();
+		final String fontName = font.getName();
+		final double width = Screen.getPrimary().getBounds().getWidth();
+		final double height = Screen.getPrimary().getBounds().getHeight();
+		final double aspectRatio = width / height;
+		fontFamilyLabel.setText(bundle.getString("devmode.font.family") + ": " + fontFamily);
+		fontNameLabel.setText(bundle.getString("devmode.font.name") + ": " + fontName);
+		screenWidthLabel.setText(bundle.getString("devmode.screen.width") + ": " + (int) width);
+		screenHeightLabel.setText(bundle.getString("devmode.screen.height") + ": " + (int) height);
+		aspectRatioLabel.setText(
+			bundle.getString("devmode.screen.aspectratio") + ": " + aspectRatio);
+		devModeContainer.setManaged(true);
+		devModeContainer.setVisible(true);
 	}
 	private void loadPlayerItem() {
 		Thread.ofVirtual().start(() -> {
@@ -242,19 +245,12 @@ public class MainWindow {
 				restartClickCount = 0;
 				State.getState().isDeveloperMode = !State.getState().isDeveloperMode;
 				Platform.runLater(() -> {
-					final Font font = settingsHelpButton.getFont();
-					final String fontFamily = font.getFamily();
-					final String fontName = font.getName();
-					final double width = Screen.getPrimary().getBounds().getWidth();
-					final double height = Screen.getPrimary().getBounds().getHeight();
-					final double aspectRatio = width / height;
-					fontFamilyLabel.setText("Family: " + fontFamily);
-					fontNameLabel.setText("Name: " + fontName);
-					screenWidthLabel.setText("Width: " + (int) width);
-					screenHeightLabel.setText("Height: " + (int) height);
-					aspectRatioLabel.setText("Aspect Ratio: " + aspectRatio);
-					devModeContainer.setManaged(State.getState().isDeveloperMode);
-					devModeContainer.setVisible(State.getState().isDeveloperMode);
+					if (State.getState().isDeveloperMode) {
+						showDevModeLabels();
+					} else {
+						devModeContainer.setManaged(false);
+						devModeContainer.setVisible(false);
+					}
 				});
 				hexPanel.repaint();
 			}
