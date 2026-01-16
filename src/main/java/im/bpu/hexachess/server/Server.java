@@ -63,6 +63,7 @@ public class Server {
 		server.createContext("/api/challenge", new ChallengeHandler());
 		server.createContext("/api/sync", new SyncHandler());
 		server.createContext("/api/tournaments/join", new TournamentJoinHandler());
+		server.createContext("/api/tournaments/participants", new TournamentParticipantsHandler());
 		server.setExecutor(Executors.newCachedThreadPool());
 		server.start();
 		System.out.println("HexaChess Server started on port " + PORT);
@@ -401,6 +402,41 @@ public class Server {
 			}
 		}
 	}
+	
+	
+	static class TournamentParticipantsHandler implements HttpHandler {
+		@Override
+		public void handle(HttpExchange exchange) throws IOException {
+			if (!"GET".equalsIgnoreCase(exchange.getRequestMethod())) {
+				sendResponse(exchange, 405, "Method Not Allowed");
+				return;
+			}
+			try {
+				String query = exchange.getRequestURI().getQuery();
+				if (query == null || !query.contains("id=")) {
+					sendResponse(exchange, 400, "Missing tournament ID");
+					return;
+				}
+				String tournamentId = query.split("=")[1];
+
+				TournamentDAO dao = new TournamentDAO();
+				List<Player> players = dao.getParticipants(tournamentId);
+				
+				for(Player p : players) {
+					p.setEmail(null);
+					p.setPasswordHash(null);
+				}
+
+				String response = MAPPER.writeValueAsString(players);
+				sendResponse(exchange, 200, response);
+			} catch (Exception e) {
+				e.printStackTrace();
+				sendResponse(exchange, 500, "Internal Error");
+			}
+		}
+	}
+	
+	
 	static class SyncHandler implements HttpHandler {
 		@Override
 		public void handle(HttpExchange exchange) throws IOException {
