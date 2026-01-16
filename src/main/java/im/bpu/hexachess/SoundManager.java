@@ -18,7 +18,9 @@ public class SoundManager {
 	private static double calculatePerceivedVolume(double sliderValue) {
 		// grows too quickly at low slider values
 		// return Math.log10(1 + SCALING_FACTOR * sliderValue); // log10(1) = 0 to log10(10) = 1
-		return Math.pow(10, 3 * (sliderValue - 1)); // 10^(3*(0-1))=0.001 to 10^(3*(1-1))=1
+		// perceived gain, 3 represents 60dB range, 20dB per 10x power doubling/halving difference
+		// return Math.pow(10, 3 * (sliderValue - 1)); // 10^(3*(0-1))=0.001 to 10^(3*(1-1))=1
+		return Math.pow(sliderValue, 3); // 0^3=0 to 1^3=1
 	}
 	public static void playClick() {
 		if (CLICK == null) {
