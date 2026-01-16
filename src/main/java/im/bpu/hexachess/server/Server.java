@@ -451,8 +451,8 @@ public class Server {
 					return;
 				}
 				String tournamentId = query.split("=")[1];
-				TournamentDAO dao = new TournamentDAO();
-				List<Player> players = dao.getParticipants(tournamentId);
+				TournamentDAO tournamentDAO = new TournamentDAO();
+				List<Player> players = tournamentDAO.getParticipants(tournamentId);
 				for (Player player : players) {
 					player.setEmail(null);
 					player.setPasswordHash(null);
@@ -618,8 +618,8 @@ public class Server {
 				}
 				String playerId = jsonNode.get("playerId").asText();
 				String achievementId = jsonNode.get("achievementId").asText();
-				AchievementDAO dao = new AchievementDAO();
-				dao.unlock(playerId, achievementId);
+				AchievementDAO achievementDAO = new AchievementDAO();
+				achievementDAO.unlock(playerId, achievementId);
 				System.out.println("Succès débloqué pour " + handle + " : " + achievementId);
 				sendResponse(exchange, 200, "OK");
 			} catch (Exception exception) {

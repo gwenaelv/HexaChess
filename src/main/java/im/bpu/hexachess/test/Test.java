@@ -325,12 +325,12 @@ public class Test {
 	// ============ Tests DAO ============
 	private static void testPlayerDAO() {
 		try {
-			PlayerDAO dao = new PlayerDAO();
-			Player p =
+			PlayerDAO playerDAO = new PlayerDAO();
+			Player player =
 				new Player("testDAO123", "h", "e@e.com", "pw", 1200, false, LocalDateTime.now());
-			dao.create(p);
-			assert dao.read("testDAO123") != null : "Player read failed";
-			dao.delete(p);
+			playerDAO.create(player);
+			assert playerDAO.read("testDAO123") != null : "Player read failed";
+			playerDAO.delete(player);
 			pass("PlayerDAO CRUD operations");
 		} catch (Exception exception) {
 			fail("PlayerDAO", exception.getMessage() + " (DB unavailable?)");
@@ -338,12 +338,12 @@ public class Test {
 	}
 	private static void testGameDAO() {
 		try {
-			GameDAO dao = new GameDAO();
-			Game g =
+			GameDAO gameDAO = new GameDAO();
+			Game game =
 				new Game("testGameDAO", "1", "2", null, null, "", LocalDateTime.now(), null, null);
-			dao.create(g);
-			assert dao.read("testGameDAO") != null : "Game read failed";
-			dao.delete(g);
+			gameDAO.create(game);
+			assert gameDAO.read("testGameDAO") != null : "Game read failed";
+			gameDAO.delete(game);
 			pass("GameDAO CRUD operations");
 		} catch (Exception exception) {
 			fail("GameDAO", exception.getMessage() + " (DB unavailable?)");
@@ -351,12 +351,12 @@ public class Test {
 	}
 	private static void testTournamentDAO() {
 		try {
-			TournamentDAO dao = new TournamentDAO();
-			Tournament t =
+			TournamentDAO tournamentDAO = new TournamentDAO();
+			Tournament tournament =
 				new Tournament("testTournDAO", "N", "D", LocalDateTime.now(), null, null);
-			dao.create(t);
-			assert dao.read("testTournDAO") != null : "Tournament read failed";
-			dao.delete(t);
+			tournamentDAO.create(tournament);
+			assert tournamentDAO.read("testTournDAO") != null : "Tournament read failed";
+			tournamentDAO.delete(tournament);
 			pass("TournamentDAO CRUD operations");
 		} catch (Exception exception) {
 			fail("TournamentDAO", exception.getMessage() + " (DB unavailable?)");
@@ -364,11 +364,11 @@ public class Test {
 	}
 	private static void testSettingsDAO() {
 		try {
-			SettingsDAO dao = new SettingsDAO();
-			Settings s = new Settings("00000000001", "d", true, false, 3);
-			dao.create(s);
-			assert dao.read("00000000001") != null : "Settings read failed";
-			dao.delete(s);
+			SettingsDAO settingsDAO = new SettingsDAO();
+			Settings settings = new Settings("00000000001", "d", true, false, 3);
+			settingsDAO.create(settings);
+			assert settingsDAO.read("00000000001") != null : "Settings read failed";
+			settingsDAO.delete(settings);
 			pass("SettingsDAO CRUD operations");
 		} catch (Exception exception) {
 			fail("SettingsDAO", exception.getMessage() + " (DB unavailable?)");
@@ -376,16 +376,16 @@ public class Test {
 	}
 	private static void testAchievementDAO() {
 		try {
-			AchievementDAO dao = new AchievementDAO();
-			Achievement a = new Achievement("TEST_ACH_001", "Test Name", "Desc", false);
+			AchievementDAO achievementDAO = new AchievementDAO();
+			Achievement achievement = new Achievement("TEST_ACH_001", "Test Name", "Desc", false);
 			// Création
-			dao.create(a);
+			achievementDAO.create(achievement);
 			// Lecture
-			Achievement read = dao.read("TEST_ACH_001");
+			Achievement read = achievementDAO.read("TEST_ACH_001");
 			assert read != null : "Achievement read failed";
 			assert read.getName().equals("Test Name") : "Achievement content mismatch";
 			// Nettoyage
-			dao.delete(a);
+			achievementDAO.delete(achievement);
 			pass("AchievementDAO CRUD operations");
 		} catch (Exception exception) {
 			fail("AchievementDAO", exception.getMessage() + " (DB unavailable?)");

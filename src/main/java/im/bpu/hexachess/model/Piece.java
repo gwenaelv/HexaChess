@@ -14,8 +14,8 @@ public class Piece {
 	public ArrayList<AxialCoordinate> getPossibleMoves(Board board, AxialCoordinate position) {
 		List<Move> legalMoves = board.getMoves(position, this);
 		ArrayList<AxialCoordinate> destinations = new ArrayList<>();
-		for (Move m : legalMoves) {
-			destinations.add(m.to);
+		for (Move move : legalMoves) {
+			destinations.add(move.to);
 		}
 		return destinations;
 	}

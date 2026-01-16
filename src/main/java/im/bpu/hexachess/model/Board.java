@@ -166,8 +166,8 @@ public class Board {
 			Piece piece = pieces.get(c);
 			if (piece.isWhite == byWhite) {
 				List<Move> moves = getMoves(c, piece);
-				for (Move m : moves) {
-					if (m.to.equals(target)) {
+				for (Move move : moves) {
+					if (move.to.equals(target)) {
 						return true;
 					}
 				}

@@ -33,13 +33,13 @@ public class ParticipantsWindow {
 				if (players.isEmpty()) {
 					listContainer.getChildren().add(new Label("No participants yet."));
 				} else {
-					for (Player p : players) {
+					for (Player player : players) {
 						HBox row = new HBox(20);
 						row.getStyleClass().add("participant-row");
 						row.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
-						Label name = new Label(p.getHandle());
+						Label name = new Label(player.getHandle());
 						name.getStyleClass().add("participant-name");
-						Label rating = new Label(p.getRating() + " ELO");
+						Label rating = new Label(player.getRating() + " ELO");
 						row.getChildren().addAll(name, rating);
 						listContainer.getChildren().add(row);
 					}

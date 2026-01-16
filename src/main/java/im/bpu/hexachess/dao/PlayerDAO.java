@@ -166,10 +166,10 @@ public class PlayerDAO extends DAO<Player> {
 		try (PreparedStatement stmt = connect.prepareStatement(sql);
 			ResultSet rs = stmt.executeQuery()) {
 			while (rs.next()) {
-				Player p = new Player();
-				p.setHandle(rs.getString("handle"));
-				p.setRating(rs.getInt("rating"));
-				players.add(p);
+				Player player = new Player();
+				player.setHandle(rs.getString("handle"));
+				player.setRating(rs.getInt("rating"));
+				players.add(player);
 			}
 		} catch (SQLException exception) {
 			exception.printStackTrace();

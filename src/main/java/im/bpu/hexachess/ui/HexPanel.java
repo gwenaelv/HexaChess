@@ -218,13 +218,13 @@ public class HexPanel {
 	private void selectPiece(final AxialCoordinate coord) {
 		if (isLockedIn)
 			return;
-		Piece p = state.board.getPiece(coord);
-		if (p == null || p.isWhite != state.board.isWhiteTurn)
+		Piece piece = state.board.getPiece(coord);
+		if (piece == null || piece.isWhite != state.board.isWhiteTurn)
 			return;
-		if (state.isMultiplayer && p.isWhite != state.isWhitePlayer)
+		if (state.isMultiplayer && piece.isWhite != state.isWhitePlayer)
 			return;
 		selected = coord;
-		ArrayList<AxialCoordinate> rawMoves = p.getPossibleMoves(state.board, coord);
+		ArrayList<AxialCoordinate> rawMoves = piece.getPossibleMoves(state.board, coord);
 		highlighted.clear();
 		for (AxialCoordinate target : rawMoves) {
 			Move moveToCheck = new Move(selected, target);

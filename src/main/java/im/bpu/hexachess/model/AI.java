@@ -25,10 +25,10 @@ public class AI {
 		// On récupère les coups et on FILTRE les illégaux
 		final List<Move> rawMoves = board.listMoves(!maximizingPlayer);
 		final List<Move> moves = new ArrayList<>();
-		for (Move m : rawMoves) {
+		for (Move move : rawMoves) {
 			// Si le coup ne cause pas d'autodestruction, on le garde pour le calcul
-			if (!board.wouldResultInCheck(m)) {
-				moves.add(m);
+			if (!board.wouldResultInCheck(move)) {
+				moves.add(move);
 			}
 		}
 		// final List<Move> moves = board.listMoves(!maximizingPlayer);
@@ -55,10 +55,10 @@ public class AI {
 		// On récupère les coups et on FILTRE les illégaux
 		final List<Move> rawMoves = board.listMoves(false);
 		final List<Move> moves = new ArrayList<>();
-		for (Move m : rawMoves) {
+		for (Move move : rawMoves) {
 			// C'est ICI qu'on empêche l'IA de se suicider ou d'ignorer l'échec
-			if (!board.wouldResultInCheck(m)) {
-				moves.add(m);
+			if (!board.wouldResultInCheck(move)) {
+				moves.add(move);
 			}
 		}
 		// final List<Move> moves = board.listMoves(false);
