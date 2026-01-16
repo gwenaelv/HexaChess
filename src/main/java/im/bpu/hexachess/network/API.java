@@ -297,4 +297,29 @@ public class API {
 	public static List<Player> participants(final String tournamentId) {
 		return fetch("/participants?id=" + tournamentId, Player[].class);
 	}
+
+
+
+	public static boolean updateProfile(String currentPassword, String email, String location, String avatar, String newPassword) {
+		try {
+			ObjectNode json = MAPPER.createObjectNode();
+			json.put("currentPassword", currentPassword);
+			json.put("email", email);
+			json.put("location", location);
+			json.put("avatar", avatar);
+			if (newPassword != null && !newPassword.isEmpty()) {
+				json.put("newPassword", newPassword);
+			}
+
+			HttpRequest.Builder requestBuilder = HttpRequest.newBuilder()
+				.POST(HttpRequest.BodyPublishers.ofString(json.toString()))
+				.header("Content-Type", "application/json");
+
+			HttpResponse<String> response = sendWithFallback(requestBuilder, "/profile/update");
+			return response.statusCode() == 200;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
 }
