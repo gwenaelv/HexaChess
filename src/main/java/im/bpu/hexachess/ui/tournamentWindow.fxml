@@ -9,7 +9,7 @@
 		<Insets top="20" right="20" bottom="20" left="20" />
 	</padding>
 	<VBox alignment="center" spacing="8" styleClass="profile-container" maxWidth="600">
-		<Label fx:id="nameLabel" styleClass="h2" wrapText="true" textAlignment="CENTER" />
+		<Label fx:id="nameLabel" styleClass="h2" wrapText="true" textAlignment="center" />
 		<Label fx:id="dateLabel" styleClass="profile-info" style="-fx-text-fill: gray;" />
 		<Label fx:id="statusLabel" style="-fx-font-weight: bold;" />
 	</VBox>
