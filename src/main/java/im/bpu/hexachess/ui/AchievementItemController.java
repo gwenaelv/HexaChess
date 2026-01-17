@@ -12,7 +12,7 @@ public class AchievementItemController {
 	public void setAchievement(final Achievement achievement) {
 		nameLabel.setText(achievement.getName());
 		descriptionLabel.setText(achievement.getDescription());
-		if (achievement.isUnlocked()) {
+		if (achievement.getUnlocked()) {
 			statusLabel.setText("Unlocked ✅");
 			statusLabel.getStyleClass().remove("text-danger");
 			statusLabel.getStyleClass().add("text-success");
