@@ -47,7 +47,7 @@
 	</VBox>
 	<VBox fx:id="opponentItem" StackPane.alignment="bottom_right" alignment="top_right" managed="false" spacing="12" visible="false" styleClass="player-info-box, player-info-box-right">
 		<Label fx:id="opponentTimerLabel" text="10:00" styleClass="timer-label" />
-		<HBox spacing="12">
+		<HBox alignment="top_right" spacing="12">
 			<VBox alignment="center_right" spacing="4">
 				<HBox alignment="center_right" spacing="8">
 					<Region fx:id="opponentCountryFlagIcon" managed="false" visible="false" styleClass="country-flags, country-flags-medium" />
