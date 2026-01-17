@@ -243,11 +243,20 @@
 	-fx-max-height: 80px;
 	-fx-max-width: 240px;
 	-fx-padding: 12px;
-	-fx-translate-x: 16px;
 	-fx-translate-y: -16px;
 	max-height: 80px;
 	max-width: 240px;
 	padding: 12px;
+}
+
+.player-info-box-left
+{
+	-fx-translate-x: 16px;
+}
+
+.player-info-box-right
+{
+	-fx-translate-x: -16px;
 }
 
 .player-item,
