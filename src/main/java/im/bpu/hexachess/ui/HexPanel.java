@@ -30,6 +30,7 @@ public class HexPanel {
 	private static final long DT = 500;
 	private static final long MAX_DT = 6000;
 	private static final int BACKOFF_FACTOR = 2;
+	public Consumer<Move> onPuzzleMove;
 	private final State state;
 	private final AI ai = new AI();
 	private final HexGeometry geometry;
@@ -156,6 +157,14 @@ public class HexPanel {
 		unlockMoveAchievements(selected, target);
 		deselect();
 		checkGameOver();
+		if (state.isPuzzleMode) {
+			if (onPuzzleMove != null) {
+				final Move playedMove = new Move(selected, target);
+				onPuzzleMove.accept(playedMove);
+			}
+			repaint();
+			return;
+		}
 		if (isGameOver)
 			return;
 		isLockedIn = true;

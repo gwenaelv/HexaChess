@@ -315,6 +315,10 @@ public class MainWindow {
 		loadWindow("ui/profileWindow.fxml", new ProfileWindow(), settingsHelpButton);
 	}
 	@FXML
+	private void openPuzzles() {
+    	loadWindow("ui/puzzlesWindow.fxml", new PuzzleWindow(), settingsHelpButton);
+	}
+	@FXML
 	private void openTournaments() {
 		stopTimer();
 		loadWindow("ui/tournamentsWindow.fxml", new TournamentsWindow(), settingsHelpButton);

@@ -65,7 +65,7 @@
 		<Button text="%main.search" onAction="#openSearch" styleClass="sidebar-item" />
 		<Button text="%main.profile" onAction="#openProfile" styleClass="sidebar-item" />
 		<Button text="%main.achievements" onAction="#openAchievements" styleClass="sidebar-item" />
-		<!--<Button text="%main.puzzles" onAction="#openPuzzles" styleClass="sidebar-item" />-->
+		<Button text="%main.puzzles" onAction="#openPuzzles" styleClass="sidebar-item" />
 		<Button text="%main.tournaments" onAction="#openTournaments" styleClass="sidebar-item" />
 		<Button text="%main.leaderboard" onAction="#openLeaderboard" styleClass="sidebar-item" />
 	</VBox>
