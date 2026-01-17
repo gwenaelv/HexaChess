@@ -19,7 +19,7 @@ public class LeaderboardWindow {
 	@FXML
 	public void initialize() {
 		Thread.ofVirtual().start(() -> {
-			final List<Player> players = API.getLeaderboard();
+			final List<Player> players = API.leaderboard();
 			Platform.runLater(() -> {
 				int rank = 1;
 				for (final Player player : players) {

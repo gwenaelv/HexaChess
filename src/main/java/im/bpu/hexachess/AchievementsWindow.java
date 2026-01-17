@@ -29,7 +29,7 @@ public class AchievementsWindow {
 		}
 		Thread.ofVirtual().start(() -> {
 			final String playerId = SettingsManager.playerId;
-			final List<Achievement> achievements = API.achievementsForPlayer(playerId);
+			final List<Achievement> achievements = API.achievements(playerId);
 			Platform.runLater(() -> {
 				achievementsContainer.getChildren().clear();
 				if (achievements == null || achievements.isEmpty()) {

@@ -140,7 +140,7 @@ public class HexPanel {
 		if (isLockedIn || isGameOver)
 			return;
 		if (state.history.isEmpty()) {
-			Thread.ofVirtual().start(() -> API.unlockAchievement("ACH_0000001"));
+			Thread.ofVirtual().start(() -> API.unlock("ACH_0000001"));
 			System.out.println("Achievement: First step unlocked!");
 		}
 		final Piece pieceBeforeMove = state.board.getPiece(selected);
@@ -150,7 +150,7 @@ public class HexPanel {
 		state.board.movePiece(selected, target);
 		final Piece pieceAfterMove = state.board.getPiece(target);
 		if (wasPawn && pieceAfterMove != null && pieceAfterMove.type == PieceType.QUEEN) {
-			Thread.ofVirtual().start(() -> API.unlockAchievement("ACH_0000006"));
+			Thread.ofVirtual().start(() -> API.unlock("ACH_0000006"));
 			System.out.println("Achievement: Promotion Royal unlocked!");
 		}
 		deselect();

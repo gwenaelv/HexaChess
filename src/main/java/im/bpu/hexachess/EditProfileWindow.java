@@ -53,7 +53,7 @@ public class EditProfileWindow {
 			return;
 		}
 		Thread.ofVirtual().start(() -> {
-			final boolean success = API.updateProfile(currentPass, emailField.getText(),
+			final boolean success = API.update(currentPass, emailField.getText(),
 				locationField.getText(), avatarField.getText(), newPasswordField.getText());
 			Platform.runLater(() -> {
 				if (success) {
