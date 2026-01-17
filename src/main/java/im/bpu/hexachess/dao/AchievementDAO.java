@@ -17,9 +17,11 @@ public class AchievementDAO extends DAO<Achievement> {
 	private static final String READ = "SELECT * FROM achievements WHERE achievement_id = ?";
 	private static final String READ_ALL = "SELECT * FROM achievements";
 	private static final String READ_ALL_FOR_PLAYER =
-		"SELECT a.achievement_id, a.name, a.description, CASE WHEN pa.player_id IS NOT NULL THEN "
-		+ "TRUE ELSE FALSE END AS unlocked FROM achievements a LEFT JOIN unlocks pa ON "
-		+ "a.achievement_id = pa.achievement_id AND pa.player_id = ? ORDER BY a.name ";
+		"SELECT achievements.achievement_id, name, description, CASE WHEN player_id IS NOT NULL "
+		+ "THEN TRUE ELSE FALSE END AS unlocked FROM achievements LEFT JOIN unlocks ON "
+		+ "achievements.achievement_id = unlocks.achievement_id AND player_id = ? ORDER BY name";
+	private static final String UNLOCK =
+		"INSERT IGNORE INTO unlocks (player_id, achievement_id) VALUES (?, ?)";
 	@Override
 	public Achievement create(final Achievement achievement) {
 		try (final PreparedStatement pstmt = connect.prepareStatement(CREATE)) {
@@ -84,25 +86,13 @@ public class AchievementDAO extends DAO<Achievement> {
 		}
 		return achievements;
 	}
-	public void unlock(final String playerId, final String achievementId) {
-		final String sql = "INSERT IGNORE INTO unlocks (player_id, achievement_id) VALUES (?, ?)";
-		try (final PreparedStatement pstmt = connect.prepareStatement(sql)) {
-			pstmt.setString(1, playerId);
-			pstmt.setString(2, achievementId);
-			pstmt.executeUpdate();
-		} catch (final SQLException exception) {
-			exception.printStackTrace();
-		}
-	}
 	public ArrayList<Achievement> readAllForPlayer(final String playerId) {
 		final ArrayList<Achievement> achievements = new ArrayList<>();
 		try (final PreparedStatement pstmt = connect.prepareStatement(READ_ALL_FOR_PLAYER)) {
 			pstmt.setString(1, playerId);
 			try (final ResultSet rs = pstmt.executeQuery()) {
 				while (rs.next()) {
-					final Achievement achievement =
-						new Achievement(rs.getString("achievement_id"), rs.getString("name"),
-							rs.getString("description"), rs.getBoolean("unlocked"));
+					final Achievement achievement = resultSetToAchievement(rs);
 					achievement.setUnlocked(rs.getBoolean("unlocked"));
 					achievements.add(achievement);
 				}
@@ -111,5 +101,14 @@ public class AchievementDAO extends DAO<Achievement> {
 			exception.printStackTrace();
 		}
 		return achievements;
+	}
+	public void unlock(final String playerId, final String achievementId) {
+		try (final PreparedStatement pstmt = connect.prepareStatement(UNLOCK)) {
+			pstmt.setString(1, playerId);
+			pstmt.setString(2, achievementId);
+			pstmt.executeUpdate();
+		} catch (final SQLException exception) {
+			exception.printStackTrace();
+		}
 	}
 }
