@@ -67,21 +67,17 @@ public class HexPanel {
 		// accumulate opacity to remove hex gaps
 		repaint();
 	}
+	private AxialCoordinate findKingInCheck() {
+		final AxialCoordinate whiteKing = state.board.findKingPos(true);
+		if (whiteKing != null && state.board.isInDanger(whiteKing, false))
+			return whiteKing;
+		final AxialCoordinate blackKing = state.board.findKingPos(false);
+		if (blackKing != null && state.board.isInDanger(blackKing, true))
+			return blackKing;
+		return null;
+	}
 	private void drawBoard(final GraphicsContext gc, final double cx, final double cy) {
-		AxialCoordinate kingInCheck = null;
-		try {
-			final AxialCoordinate whiteKing = state.board.findKingPos(true);
-			if (whiteKing != null && state.board.isInDanger(whiteKing, false)) {
-				kingInCheck = whiteKing;
-			}
-			if (kingInCheck == null) {
-				final AxialCoordinate blackKing = state.board.findKingPos(false);
-				if (blackKing != null && state.board.isInDanger(blackKing, true)) {
-					kingInCheck = blackKing;
-				}
-			}
-		} catch (final Exception exception) {
-		}
+		final AxialCoordinate kingInCheck = findKingInCheck();
 		for (int q = -5; q <= 5; q++)
 			for (int r = -5; r <= 5; r++) {
 				final AxialCoordinate coord = new AxialCoordinate(q, r);
@@ -122,11 +118,9 @@ public class HexPanel {
 			}
 		} else {
 			int repetitionCount = 0;
-			for (final Board historyBoard : state.history) {
-				if (historyBoard.equals(state.board)) {
+			for (final Board historyBoard : state.history)
+				if (historyBoard.equals(state.board))
 					repetitionCount++;
-				}
-			}
 			if (repetitionCount >= 2) {
 				isGameOver = true;
 				Platform.runLater(
@@ -136,28 +130,30 @@ public class HexPanel {
 			}
 		}
 	}
-	private void executeMove(final AxialCoordinate target) {
-		if (isLockedIn || isGameOver)
-			return;
+	private void unlockMoveAchievements(
+		final AxialCoordinate selected, final AxialCoordinate target) {
 		final ResourceBundle bundle = Main.getBundle();
-		if (state.history.isEmpty()) {
+		if (state.history.isEmpty())
 			Thread.ofVirtual().start(() -> {
 				API.unlock("ACH_0000001");
 				System.out.println(bundle.getString("achievement.firststep"));
 			});
-		}
-		final Piece pieceBeforeMove = state.board.getPiece(selected);
-		final boolean wasPawn = (pieceBeforeMove != null && pieceBeforeMove.type == PieceType.PAWN);
-		final String moveString = selected.q + "," + selected.r + "->" + target.q + "," + target.r;
-		state.history.push(new Board(state.board));
-		state.board.movePiece(selected, target);
-		final Piece pieceAfterMove = state.board.getPiece(target);
-		if (wasPawn && pieceAfterMove != null && pieceAfterMove.type == PieceType.QUEEN) {
+		final Piece pieceBefore = state.board.getPiece(selected);
+		final Piece pieceAfter = state.board.getPiece(target);
+		if (pieceBefore != null && pieceBefore.type == PieceType.PAWN && pieceAfter != null
+			&& pieceAfter.type == PieceType.QUEEN)
 			Thread.ofVirtual().start(() -> {
 				API.unlock("ACH_0000006");
 				System.out.println(bundle.getString("achievement.promotionroyal"));
 			});
-		}
+	}
+	private void executeMove(final AxialCoordinate target) {
+		if (isLockedIn || isGameOver)
+			return;
+		final String moveString = selected.q + "," + selected.r + "->" + target.q + "," + target.r;
+		state.history.push(new Board(state.board));
+		state.board.movePiece(selected, target);
+		unlockMoveAchievements(selected, target);
 		deselect();
 		checkGameOver();
 		if (isGameOver)
@@ -229,13 +225,10 @@ public class HexPanel {
 		if (state.isMultiplayer && piece.isWhite != state.isWhitePlayer)
 			return;
 		selected = coord;
-		final List<Move> rawMoves = state.board.getMoves(coord, piece);
 		highlighted.clear();
-		for (final Move move : rawMoves) {
-			if (!state.board.isMoveIntoCheck(move, state.board.isWhiteTurn)) {
+		for (final Move move : state.board.getMoves(coord, piece))
+			if (!state.board.isMoveIntoCheck(move, state.board.isWhiteTurn))
 				highlighted.add(move.to);
-			}
-		}
 		repaint();
 	}
 	private void handleMouseClick(final double x, final double y) {
