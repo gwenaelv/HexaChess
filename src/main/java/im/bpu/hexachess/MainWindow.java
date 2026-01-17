@@ -316,7 +316,7 @@ public class MainWindow {
 	}
 	@FXML
 	private void openPuzzles() {
-    	loadWindow("ui/puzzlesWindow.fxml", new PuzzleWindow(), settingsHelpButton);
+		loadWindow("ui/puzzlesWindow.fxml", new PuzzleWindow(), settingsHelpButton);
 	}
 	@FXML
 	private void openTournaments() {
