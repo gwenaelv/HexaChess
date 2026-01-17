@@ -16,17 +16,17 @@ public class LeaderboardMenu {
 	@FXML private VBox listContainer;
 	@FXML
 	public void initialize() {
-		List<Player> players = API.getLeaderboard();
+		final List<Player> players = API.getLeaderboard();
 		int rank = 1;
-		for (Player player : players) {
-			HBox row = new HBox(20);
+		for (final Player player : players) {
+			final HBox row = new HBox(20);
 			row.setAlignment(Pos.CENTER_LEFT);
 			row.getStyleClass().add("player-item");
-			Label rankLabel = new Label("#" + rank);
+			final Label rankLabel = new Label("#" + rank);
 			rankLabel.getStyleClass().add("leaderboard-rank");
-			Label nameLabel = new Label(player.getHandle());
+			final Label nameLabel = new Label(player.getHandle());
 			nameLabel.getStyleClass().add("leaderboard-name");
-			Label eloLabel = new Label(player.getRating() + " pts");
+			final Label eloLabel = new Label(player.getRating() + " pts");
 			eloLabel.getStyleClass().add("leaderboard-elo");
 			row.getChildren().addAll(rankLabel, nameLabel, eloLabel);
 			listContainer.getChildren().add(row);

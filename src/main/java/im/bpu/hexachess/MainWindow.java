@@ -295,12 +295,10 @@ public class MainWindow {
 		menu.getItems().addAll(settingsItem, helpItem);
 		menu.show(settingsHelpButton, Side.BOTTOM, 0, 0);
 	}
-
 	@FXML
 	private void openHelp() {
-    loadWindow("ui/helpWindow.fxml", new HelpWindow(), settingsHelpButton);
-}	
- 
+		loadWindow("ui/helpWindow.fxml", new HelpWindow(), settingsHelpButton);
+	}
 	@FXML
 	private void openSearch() {
 		loadWindow("ui/searchWindow.fxml", new SearchWindow(), settingsHelpButton);
@@ -326,9 +324,9 @@ public class MainWindow {
 		updateTimerLabels(playerTimerLabel, playerTimeSeconds);
 		updateTimerLabels(opponentTimerLabel, opponentTimeSeconds);
 		clockTimeline = new Timeline(new KeyFrame(Duration.seconds(1), event -> {
-			State state = State.getState();
-			boolean isWhiteTurn = state.board.isWhiteTurn;
-			boolean isPlayerWhite = state.isWhitePlayer;
+			final State state = State.getState();
+			final boolean isWhiteTurn = state.board.isWhiteTurn;
+			final boolean isPlayerWhite = state.isWhitePlayer;
 			if (isWhiteTurn == isPlayerWhite) {
 				if (playerTimeSeconds > 0) {
 					playerTimeSeconds--;
@@ -348,12 +346,12 @@ public class MainWindow {
 		clockTimeline.setCycleCount(Animation.INDEFINITE);
 		clockTimeline.play();
 	}
-	private void updateTimerLabels(Label label, int totalSeconds) {
+	private void updateTimerLabels(final Label label, final int totalSeconds) {
 		if (label == null)
 			return;
-		int minutes = totalSeconds / 60;
-		int seconds = totalSeconds % 60;
-		String timeString = String.format("%02d:%02d", minutes, seconds);
+		final int minutes = totalSeconds / 60;
+		final int seconds = totalSeconds % 60;
+		final String timeString = String.format("%02d:%02d", minutes, seconds);
 		label.setText(timeString);
 	}
 }

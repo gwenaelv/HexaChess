@@ -37,7 +37,7 @@ class HexRenderer {
 	private static final int TEXT_Y_OFFSET = 1;
 	private static final int BORDER_LINE_WIDTH = 3;
 	private static final int RADIUS = 5;
-	private static final Color CHECK_RED = Color.rgb(255, 0, 0, 0.7); // Rouge un peu transparent
+	private static final Color CHECK_RED = Color.rgb(255, 0, 0, 0.7); // Slightly transparent red
 	private final HexGeometry geometry;
 	private Board board;
 	HexRenderer(final HexGeometry geometry, final Board board) {

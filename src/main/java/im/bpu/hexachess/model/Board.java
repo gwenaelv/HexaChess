@@ -151,9 +151,9 @@ public class Board {
 		}
 	}
 	// 1. Find the king position
-	public AxialCoordinate findKing(boolean isWhite) {
-		for (AxialCoordinate c : pieces.keySet()) {
-			Piece piece = pieces.get(c);
+	public AxialCoordinate findKing(final boolean isWhite) {
+		for (final AxialCoordinate c : pieces.keySet()) {
+			final Piece piece = pieces.get(c);
 			if (piece.isWhite == isWhite && piece.type == PieceType.KING) {
 				return c;
 			}
@@ -161,12 +161,12 @@ public class Board {
 		return null;
 	}
 	// 2. Is the square attacked by opponent pieces?
-	public boolean isSquareAttacked(AxialCoordinate target, boolean byWhite) {
-		for (AxialCoordinate c : pieces.keySet()) {
-			Piece piece = pieces.get(c);
+	public boolean isSquareAttacked(final AxialCoordinate target, final boolean byWhite) {
+		for (final AxialCoordinate c : pieces.keySet()) {
+			final Piece piece = pieces.get(c);
 			if (piece.isWhite == byWhite) {
-				List<Move> moves = getMoves(c, piece);
-				for (Move move : moves) {
+				final List<Move> moves = getMoves(c, piece);
+				for (final Move move : moves) {
 					if (move.to.equals(target)) {
 						return true;
 					}
@@ -175,11 +175,11 @@ public class Board {
 		}
 		return false;
 	}
-	public boolean wouldResultInCheck(Move move) {
-		Board tempBoard = new Board(this);
+	public boolean wouldResultInCheck(final Move move) {
+		final Board tempBoard = new Board(this);
 		tempBoard.movePiece(move.from, move.to);
-		boolean amIWhite = pieces.get(move.from).isWhite;
-		AxialCoordinate myKingPos = tempBoard.findKing(amIWhite);
+		final boolean amIWhite = pieces.get(move.from).isWhite;
+		final AxialCoordinate myKingPos = tempBoard.findKing(amIWhite);
 		return tempBoard.isSquareAttacked(myKingPos, !amIWhite);
 	}
 	public boolean isInCheck(boolean isWhite) {

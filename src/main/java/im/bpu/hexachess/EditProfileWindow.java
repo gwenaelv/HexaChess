@@ -3,6 +3,7 @@ package im.bpu.hexachess;
 import im.bpu.hexachess.entity.Player;
 import im.bpu.hexachess.network.API;
 
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -28,10 +29,10 @@ public class EditProfileWindow {
 		}
 	}
 	private void loadCurrentData() {
-		new Thread(() -> {
-			Player me = API.profile(myHandle);
+		Thread.ofVirtual().start(() -> {
+			final Player me = API.profile(myHandle);
 			if (me != null) {
-				javafx.application.Platform.runLater(() -> {
+				Platform.runLater(() -> {
 					emailField.setText(me.getEmail());
 					locationField.setText(me.getLocation());
 					avatarField.setText(me.getAvatar());
@@ -39,11 +40,11 @@ public class EditProfileWindow {
 					newPasswordField.clear();
 				});
 			}
-		}).start();
+		});
 	}
 	@FXML
 	private void handleSave() {
-		String currentPass = currentPasswordField.getText();
+		final String currentPass = currentPasswordField.getText();
 		if (currentPass == null || currentPass.isEmpty()) {
 			statusLabel.setText("Current password is required!");
 			statusLabel.setStyle("-fx-text-fill: red;");

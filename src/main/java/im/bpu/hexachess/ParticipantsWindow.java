@@ -7,6 +7,7 @@ import im.bpu.hexachess.network.API;
 import java.util.List;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
@@ -27,19 +28,19 @@ public class ParticipantsWindow {
 		}
 		titleLabel.setText("Participants: " + targetTournament.getName());
 		Thread.ofVirtual().start(() -> {
-			List<Player> players = API.participants(targetTournament.getTournamentId());
+			final List<Player> players = API.participants(targetTournament.getTournamentId());
 			Platform.runLater(() -> {
 				listContainer.getChildren().clear();
 				if (players.isEmpty()) {
 					listContainer.getChildren().add(new Label("No participants yet."));
 				} else {
-					for (Player player : players) {
-						HBox row = new HBox(20);
+					for (final Player player : players) {
+						final HBox row = new HBox(20);
 						row.getStyleClass().add("participant-row");
-						row.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
-						Label name = new Label(player.getHandle());
+						row.setAlignment(Pos.CENTER_LEFT);
+						final Label name = new Label(player.getHandle());
 						name.getStyleClass().add("participant-name");
-						Label rating = new Label(player.getRating() + " ELO");
+						final Label rating = new Label(player.getRating() + " ELO");
 						row.getChildren().addAll(name, rating);
 						listContainer.getChildren().add(row);
 					}

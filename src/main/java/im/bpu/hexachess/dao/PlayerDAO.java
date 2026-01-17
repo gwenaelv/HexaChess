@@ -161,17 +161,17 @@ public class PlayerDAO extends DAO<Player> {
 		return false;
 	}
 	public List<Player> getLeaderboard() {
-		List<Player> players = new ArrayList<>();
-		String sql = "SELECT handle, rating FROM players ORDER BY rating DESC LIMIT 50";
-		try (PreparedStatement stmt = connect.prepareStatement(sql);
-			ResultSet rs = stmt.executeQuery()) {
+		final List<Player> players = new ArrayList<>();
+		final String sql = "SELECT handle, rating FROM players ORDER BY rating DESC LIMIT 50";
+		try (final PreparedStatement stmt = connect.prepareStatement(sql);
+			final ResultSet rs = stmt.executeQuery()) {
 			while (rs.next()) {
-				Player player = new Player();
+				final Player player = new Player();
 				player.setHandle(rs.getString("handle"));
 				player.setRating(rs.getInt("rating"));
 				players.add(player);
 			}
-		} catch (SQLException exception) {
+		} catch (final SQLException exception) {
 			exception.printStackTrace();
 		}
 		return players;

@@ -9,7 +9,7 @@ public class AchievementItemController {
 	@FXML private Label nameLabel;
 	@FXML private Label descriptionLabel;
 	@FXML private Label statusLabel;
-	public void setAchievement(Achievement achievement) {
+	public void setAchievement(final Achievement achievement) {
 		nameLabel.setText(achievement.getName());
 		descriptionLabel.setText(achievement.getDescription());
 		if (achievement.isUnlocked()) {

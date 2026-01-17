@@ -70,17 +70,17 @@ public class HexPanel {
 	private void drawBoard(final GraphicsContext gc, final double cx, final double cy) {
 		AxialCoordinate kingInCheck = null;
 		try {
-			AxialCoordinate whiteKing = state.board.findKing(true);
+			final AxialCoordinate whiteKing = state.board.findKing(true);
 			if (whiteKing != null && state.board.isSquareAttacked(whiteKing, false)) {
 				kingInCheck = whiteKing;
 			}
 			if (kingInCheck == null) {
-				AxialCoordinate blackKing = state.board.findKing(false);
+				final AxialCoordinate blackKing = state.board.findKing(false);
 				if (blackKing != null && state.board.isSquareAttacked(blackKing, true)) {
 					kingInCheck = blackKing;
 				}
 			}
-		} catch (Exception exception) {
+		} catch (final Exception exception) {
 		}
 		for (int q = -5; q <= 5; q++)
 			for (int r = -5; r <= 5; r++) {
@@ -122,7 +122,7 @@ public class HexPanel {
 			}
 		} else {
 			int repetitionCount = 0;
-			for (Board historyBoard : state.history) {
+			for (final Board historyBoard : state.history) {
 				if (historyBoard.equals(state.board)) {
 					repetitionCount++;
 				}
@@ -143,12 +143,12 @@ public class HexPanel {
 			Thread.ofVirtual().start(() -> API.unlockAchievement("ACH_0000001"));
 			System.out.println("Achievement: First step unlocked!");
 		}
-		Piece pieceBeforeMove = state.board.getPiece(selected);
-		boolean wasPawn = (pieceBeforeMove != null && pieceBeforeMove.type == PieceType.PAWN);
+		final Piece pieceBeforeMove = state.board.getPiece(selected);
+		final boolean wasPawn = (pieceBeforeMove != null && pieceBeforeMove.type == PieceType.PAWN);
 		final String moveString = selected.q + "," + selected.r + "->" + target.q + "," + target.r;
 		state.history.push(new Board(state.board));
 		state.board.movePiece(selected, target);
-		Piece pieceAfterMove = state.board.getPiece(target);
+		final Piece pieceAfterMove = state.board.getPiece(target);
 		if (wasPawn && pieceAfterMove != null && pieceAfterMove.type == PieceType.QUEEN) {
 			Thread.ofVirtual().start(() -> API.unlockAchievement("ACH_0000006"));
 			System.out.println("Achievement: Promotion Royal unlocked!");
@@ -210,7 +210,7 @@ public class HexPanel {
 				try {
 					Thread.sleep(dt);
 					dt = Math.min(MAX_DT, dt * BACKOFF_FACTOR);
-				} catch (Exception ignored) { // high-frequency polling operation
+				} catch (final Exception ignored) { // high-frequency polling operation
 				}
 			}
 		});
@@ -218,16 +218,16 @@ public class HexPanel {
 	private void selectPiece(final AxialCoordinate coord) {
 		if (isLockedIn)
 			return;
-		Piece piece = state.board.getPiece(coord);
+		final Piece piece = state.board.getPiece(coord);
 		if (piece == null || piece.isWhite != state.board.isWhiteTurn)
 			return;
 		if (state.isMultiplayer && piece.isWhite != state.isWhitePlayer)
 			return;
 		selected = coord;
-		ArrayList<AxialCoordinate> rawMoves = piece.getPossibleMoves(state.board, coord);
+		final ArrayList<AxialCoordinate> rawMoves = piece.getPossibleMoves(state.board, coord);
 		highlighted.clear();
-		for (AxialCoordinate target : rawMoves) {
-			Move moveToCheck = new Move(selected, target);
+		for (final AxialCoordinate target : rawMoves) {
+			final Move moveToCheck = new Move(selected, target);
 			if (!state.board.wouldResultInCheck(moveToCheck)) {
 				highlighted.add(target);
 			}

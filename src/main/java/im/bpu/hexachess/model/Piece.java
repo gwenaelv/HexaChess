@@ -11,10 +11,11 @@ public class Piece {
 		this.type = type;
 		this.isWhite = isWhite;
 	}
-	public ArrayList<AxialCoordinate> getPossibleMoves(Board board, AxialCoordinate position) {
-		List<Move> legalMoves = board.getMoves(position, this);
-		ArrayList<AxialCoordinate> destinations = new ArrayList<>();
-		for (Move move : legalMoves) {
+	public ArrayList<AxialCoordinate> getPossibleMoves(
+		final Board board, final AxialCoordinate position) {
+		final List<Move> legalMoves = board.getMoves(position, this);
+		final ArrayList<AxialCoordinate> destinations = new ArrayList<>();
+		for (final Move move : legalMoves) {
 			destinations.add(move.to);
 		}
 		return destinations;

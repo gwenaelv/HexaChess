@@ -17,17 +17,17 @@ import javafx.scene.paint.Color;
 import static im.bpu.hexachess.Main.loadWindow;
 
 public class HelpWindow {
+	private static final double HEX_SIZE = 30;
 	@FXML private ScrollPane scrollPane;
 	@FXML private VBox contentBox;
 	@FXML private Button backButton;
 	@FXML private Button showBestMoveButton;
 	@FXML private Canvas moveCanvas;
 	@FXML private Label bestMoveLabel;
-	private static final double HEX_SIZE = 30;
 	private Move bestMove = null;
 	@FXML
 	private void initialize() {
-		// Désactiver le bouton si pas en jeu
+		// Disable the button if not in the game
 		if (State.getState().board == null) {
 			showBestMoveButton.setDisable(true);
 			bestMoveLabel.setText("Start a game to see the best move");
@@ -53,7 +53,7 @@ public class HelpWindow {
 			Platform.runLater(() -> {
 				if (bestMove != null) {
 					bestMoveLabel.setText("Best move: " + bestMove.from.q + "," + bestMove.from.r
-						+ " → " + bestMove.to.q + "," + bestMove.to.r);
+						+ " -> " + bestMove.to.q + "," + bestMove.to.r);
 					drawBestMove();
 				} else {
 					bestMoveLabel.setText("No moves available");
@@ -81,12 +81,12 @@ public class HelpWindow {
 		// Draw "to" hex
 		drawHex(gc, centerX + 60, centerY, HEX_SIZE, Color.LIGHTBLUE, "TO");
 	}
-	private void drawHex(
-		GraphicsContext gc, double x, double y, double size, Color color, String label) {
+	private void drawHex(final GraphicsContext gc, final double x, final double y,
+		final double size, final Color color, final String label) {
 		final double[] xPoints = new double[6];
 		final double[] yPoints = new double[6];
 		for (int i = 0; i < 6; i++) {
-			double angle = Math.PI / 3 * i;
+			final double angle = Math.PI / 3 * i;
 			xPoints[i] = x + size * Math.cos(angle);
 			yPoints[i] = y + size * Math.sin(angle);
 		}
