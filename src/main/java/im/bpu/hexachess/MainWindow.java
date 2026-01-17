@@ -334,6 +334,7 @@ public class MainWindow {
 		updateTimerLabels(playerTimerLabel, playerTimeSeconds);
 		updateTimerLabels(opponentTimerLabel, opponentTimeSeconds);
 		clockTimeline = new Timeline(new KeyFrame(Duration.seconds(1), event -> {
+			final ResourceBundle bundle = Main.getBundle();
 			final State state = State.getState();
 			final boolean isWhiteTurn = state.board.isWhiteTurn;
 			final boolean isPlayerWhite = state.isWhitePlayer;
@@ -350,7 +351,7 @@ public class MainWindow {
 			}
 			if (playerTimeSeconds == 0 || opponentTimeSeconds == 0) {
 				stopTimer();
-				System.out.println("Time's up!");
+				System.out.println(bundle.getString("main.timer"));
 			}
 		}));
 		clockTimeline.setCycleCount(Animation.INDEFINITE);
