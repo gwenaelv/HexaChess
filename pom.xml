@@ -134,6 +134,7 @@
 						<list>im.bpu.hexachess.AchievementsWindow</list>
 						<list>im.bpu.hexachess.EditProfileWindow</list>
 						<list>im.bpu.hexachess.HelpWindow</list>
+						<list>im.bpu.hexachess.LeaderboardWindow</list>
 						<list>im.bpu.hexachess.LoginWindow</list>
 						<list>im.bpu.hexachess.MainWindow</list>
 						<list>im.bpu.hexachess.ParticipantsWindow</list>
@@ -150,7 +151,7 @@
 						<list>im.bpu.hexachess.entity.Puzzle</list>
 						<list>im.bpu.hexachess.entity.Settings</list>
 						<list>im.bpu.hexachess.entity.Tournament</list>
-						<list>im.bpu.hexachess.ui.LeaderboardWindow</list>
+						<list>im.bpu.hexachess.ui.AchievementItemController</list>
 						<list>io.jsonwebtoken.impl.DefaultClaimsBuilder$Supplier</list>
 						<list>io.jsonwebtoken.impl.DefaultJwtBuilder$Supplier</list>
 						<list>io.jsonwebtoken.impl.DefaultJwtHeaderBuilder$Supplier</list>
